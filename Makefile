@@ -1,11 +1,12 @@
 # Compiler Settings
 CC = g++
 CPP_VERSION = -std=c++17
-CFLAGS = -Wall -Wextra -Werror $(CPP_VERSION)
+CFLAGS = -Wall -Wextra -Werror $(CPP_VERSION) -g3
 
 # Project Settings
 NAME = avm
-FILE = main.cpp
+FILE =	main.cpp \
+		OperandFactory.cpp
 SRC_DIR = src
 SRC = $(addprefix $(SRC_DIR)/,$(FILE))
 INC = -I include
