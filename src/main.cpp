@@ -4,7 +4,12 @@
 
 int main()
 {
-    auto factory = instance();
-    auto a = factory.createOperand(Int8, "123");
-    std::cout << a->toString() << std::endl;
+    auto a = factory().createOperand(Int8, "30");
+    std::cout << "a: " << a->toString() << std::endl;
+
+    auto b = factory().createOperand(Float, "456");
+    std::cout << "b: " << b->toString() << std::endl;
+
+    auto result = *a + *b;
+    std::cout << "result: " << result->toString() << std::endl;
 }

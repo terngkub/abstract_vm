@@ -1,6 +1,7 @@
 #pragma once
 #include "IOperand.hpp"
 #include <list>
+#include <limits>
 
 class OperandFactory
 {
@@ -25,4 +26,20 @@ public:
 	IOperand const * createOperand(eOperandType type, std::string const & value) const;
 };
 
-OperandFactory & instance();
+OperandFactory & factory();
+
+template <typename Big, typename Small>
+bool is_overflow(Big value)
+{
+	if (value > std::numeric_limits<Small>::max())
+		return true;
+	return false;
+}
+
+template <typename Big, typename Small>
+bool is_underflow(Big value)
+{
+	if (value < std::numeric_limits<Small>::min())
+		return true;
+	return false;
+}

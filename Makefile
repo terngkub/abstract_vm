@@ -1,30 +1,38 @@
 # Compiler Settings
-CC = g++
-CPP_VERSION = -std=c++17
-CFLAGS = -Wall -Wextra -Werror $(CPP_VERSION) -g3
+CC			=	g++
+CPP_VERSION	=	-std=c++17
+CFLAGS		=	-Wall -Wextra -Werror $(CPP_VERSION) -g3
 
 # Project Settings
-NAME = avm
-FILE =	main.cpp \
-		OperandFactory.cpp
-SRC_DIR = src
-SRC = $(addprefix $(SRC_DIR)/,$(FILE))
-INC = -I include
-OBJ_DIR = obj
-OBJ = $(addprefix $(OBJ_DIR)/,$(FILE:%.cpp=%.o))
+NAME		=	avm
+HEADER		=	IOperand.hpp \
+				Operand.hpp \
+				OperandFactory.hpp \
+				exception.hpp
+FILE		=	main.cpp \
+				OperandFactory.cpp \
+				exception.cpp
+SRC_DIR		=	src
+INC_DIR		=	include
+OBJ_DIR		=	obj
+
+INC_FLAG	=	-I $(INC_DIR)
+SRC			=	$(addprefix $(SRC_DIR)/,$(FILE))
+INC			=	$(addprefix $(INC_DIR)/,$(HEADER))
+OBJ			=	$(addprefix $(OBJ_DIR)/,$(FILE:%.cpp=%.o))
 
 # Rules
 
 all: $(NAME)
 
-$(NAME): $(OBJ_DIR) $(OBJ)
-	$(CC) $(CFLAGS) $(INC) -o $(NAME) $(OBJ)
+$(NAME): $(OBJ_DIR) $(OBJ) $(INC)
+	$(CC) $(CFLAGS) $(INC_FLAG) -o $(NAME) $(OBJ)
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	$(CC) $(CFLAGS) $(INC_FLAG) -c -o $@ $<
 
 clean:
 	rm -rf $(OBJ_DIR)
