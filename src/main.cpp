@@ -1,5 +1,5 @@
-#include "OperandFactory.hpp"
-#include "Operand.hpp"
+#include "factory.hpp"
+#include "operand.hpp"
 #include <iostream>
 
 int main()

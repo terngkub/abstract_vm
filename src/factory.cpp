@@ -1,9 +1,9 @@
-#include "OperandFactory.hpp"
-#include "Operand.hpp"
+#include "factory.hpp"
+#include "operand.hpp"
 #include "exception.hpp"
 #include <iostream>
 
-IOperand const *OperandFactory::createInt8(std::string const &value) const
+IOperand const *Factory::createInt8(std::string const &value) const
 {
 	long long big_n = std::stoll(value);
 
@@ -16,7 +16,7 @@ IOperand const *OperandFactory::createInt8(std::string const &value) const
 	return (new Operand<int8_t>(small_n));
 }
 
-IOperand const *OperandFactory::createInt16(std::string const &value) const
+IOperand const *Factory::createInt16(std::string const &value) const
 {
 	long long big_n = std::stoll(value);
 
@@ -29,7 +29,7 @@ IOperand const *OperandFactory::createInt16(std::string const &value) const
 	return (new Operand<int16_t>(small_n));
 }
 
-IOperand const *OperandFactory::createInt32(std::string const &value) const
+IOperand const *Factory::createInt32(std::string const &value) const
 {
 	long long big_n = std::stoll(value);
 
@@ -42,7 +42,7 @@ IOperand const *OperandFactory::createInt32(std::string const &value) const
 	return (new Operand<int32_t>(small_n));
 }
 
-IOperand const *OperandFactory::createFloat(std::string const &value) const
+IOperand const *Factory::createFloat(std::string const &value) const
 {
 	long double big_n = std::stold(value);
 
@@ -55,7 +55,7 @@ IOperand const *OperandFactory::createFloat(std::string const &value) const
 	return (new Operand<float>(small_n));
 }
 
-IOperand const *OperandFactory::createDouble(std::string const &value) const
+IOperand const *Factory::createDouble(std::string const &value) const
 {
 	long double big_n = std::stold(value);
 
@@ -68,28 +68,28 @@ IOperand const *OperandFactory::createDouble(std::string const &value) const
 	return (new Operand<double>(small_n));
 }
 
-OperandFactory::OperandFactory() :
+Factory::Factory() :
 	func_ptr
 	{
-		&OperandFactory::createInt8,
-		&OperandFactory::createInt16,
-		&OperandFactory::createInt32,
-		&OperandFactory::createFloat,
-		&OperandFactory::createDouble
+		&Factory::createInt8,
+		&Factory::createInt16,
+		&Factory::createInt32,
+		&Factory::createFloat,
+		&Factory::createDouble
 	}
 {}
 
-OperandFactory::~OperandFactory()
+Factory::~Factory()
 {
 }
 
-IOperand const *OperandFactory::createOperand(eOperandType type, std::string const &value) const
+IOperand const *Factory::createOperand(eOperandType type, std::string const &value) const
 {
 	return (this->*func_ptr[type])(value);
 }
 
-OperandFactory & factory()
+Factory & factory()
 {
-	static OperandFactory instance;
+	static Factory instance;
 	return instance;
 }

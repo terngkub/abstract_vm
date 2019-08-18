@@ -1,15 +1,15 @@
 #pragma once
-#include "IOperand.hpp"
+#include "ioperand.hpp"
 #include <list>
 #include <limits>
 
-class OperandFactory
+class Factory
 {
-    IOperand const * (OperandFactory::*func_ptr[5])(std::string const &) const;
+    IOperand const * (Factory::*func_ptr[5])(std::string const &) const;
 
     /*
-    OperandFactory(OperandFactory const & src);
-    OperandFactory & operator=(OperandFactory const & rhs);
+    Factory(Factory const & src);
+    Factory & operator=(Factory const & rhs);
     */
 
 	IOperand const * createInt8(std::string const & value) const;
@@ -20,13 +20,13 @@ class OperandFactory
 
 
 public:
-    OperandFactory();
-    ~OperandFactory();
+    Factory();
+    ~Factory();
 
 	IOperand const * createOperand(eOperandType type, std::string const & value) const;
 };
 
-OperandFactory & factory();
+Factory & factory();
 
 template <typename Big, typename Small>
 bool is_overflow(Big value)

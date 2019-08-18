@@ -1,6 +1,6 @@
 #pragma once
-#include "IOperand.hpp"
-#include "OperandFactory.hpp"
+#include "ioperand.hpp"
+#include "factory.hpp"
 #include <sstream>
 #include <typeinfo>
 

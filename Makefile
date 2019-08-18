@@ -5,12 +5,12 @@ CFLAGS		=	-Wall -Wextra -Werror $(CPP_VERSION) -g3
 
 # Project Settings
 NAME		=	avm
-HEADER		=	IOperand.hpp \
-				Operand.hpp \
-				OperandFactory.hpp \
+HEADER		=	ioperand.hpp \
+				operand.hpp \
+				factory.hpp \
 				exception.hpp
 FILE		=	main.cpp \
-				OperandFactory.cpp \
+				factory.cpp \
 				exception.cpp
 SRC_DIR		=	src
 INC_DIR		=	include
