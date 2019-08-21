@@ -1,24 +1,51 @@
 #pragma once
 #include "ioperand.hpp"
 #include "factory.hpp"
+#include "exception.hpp"
 #include <sstream>
 #include <typeinfo>
+#include <variant>
+#include <cmath>
+#include <iostream>
+
+typedef std::variant<long long, long double> var_t;
 
 template <typename T>
 class Operand : public IOperand
 {
-	int precision;
-	eOperandType type;
-	T value;
-	std::string str;
+	// Private attribute
+
+	int				precision;
+	eOperandType	type;
+	T				value;
+	std::string		str;
+
+
+	// Unused canonical form
 
 	Operand();
 	Operand(Operand const & src) {}
 	Operand & operator=(Operand const & rhs) {}
 
+
+	// Internal operation
+
+	template <typename OptFunc>
+	IOperand const * operation(OptFunc opt, IOperand const & rhs) const
+	{
+		auto new_type = (type > rhs.getType()) ? type : rhs.getType();
+		var_t left_val = (new_type < Float) ? static_cast<long long>(value) : static_cast<long double>(value);
+		var_t right_val = (new_type < Float) ? std::stoll(rhs.toString()) : std::stold(rhs.toString());
+		var_t result_val = std::visit(opt, left_val, right_val);
+		auto result_str = std::visit(
+				[](auto arg){ return std::to_string(arg); },
+				result_val);
+		return factory().createOperand(new_type, result_str);
+	}
+
 public:
 
-	// Constructor, Destructor, Copy and Assignation
+	// Constructor and Destructor
 
 	Operand(T value) :
 		precision(0),
@@ -36,46 +63,46 @@ public:
 
 	~Operand() {}
 
+
 	// Getter
 
 	int getPrecision() const { return precision; }
 	eOperandType getType() const { return type; }
+	std::string const & toString() const { return str; }
 
-	// Opeartion
+
+	// Operations
 
 	IOperand const * operator+(IOperand const & rhs) const
 	{
+		return operation([](auto l, auto r)->var_t{return l + r;}, rhs);
+	}
+
+	IOperand const * operator-(IOperand const & rhs) const
+	{
+		return operation([](auto l, auto r)->var_t{return l - r;}, rhs);
+	}
+
+	IOperand const * operator*(IOperand const & rhs) const
+	{
+		return operation([](auto l, auto r)->var_t{return l * r;}, rhs);
+	}
+
+	IOperand const * operator/(IOperand const & rhs) const
+	{
+		if (std::stold(rhs.toString()) == 0)
+			throw AvmException("Division by zero");
+		return operation([](auto l, auto r)->var_t{return l / r;}, rhs);
+	}
+
+	IOperand const * operator%(IOperand const & rhs) const
+	{
+		if (std::stold(rhs.toString()) == 0)
+			throw AvmException("Modulo by zero");
 		auto new_type = (type > rhs.getType()) ? type : rhs.getType();
-		auto r_str = rhs.toString();
-		auto r_value = (new_type < Float) ? std::stoll(r_str) : std::stold(r_str);
-		auto result = std::to_string(value + r_value); 
+		auto result = (new_type < Float)
+				? std::to_string(static_cast<long long>(value) % std::stoll(rhs.toString()))
+				: std::to_string(fmod(static_cast<long double>(value), std::stold(rhs.toString())));
 		return factory().createOperand(new_type, result);
-	}
-
-	/*
-	IOperand const * operator-(IOperand const & rhs)
-	{
-		
-	}
-
-	IOperand const * operator*(IOperand const & rhs)
-	{
-		
-	}
-
-	IOperand const * operator/(IOperand const & rhs)
-	{
-		
-	}
-
-	IOperand const * operator%(IOperand const & rhs)
-	{
-		
-	}
-	*/
-
-	std::string const & toString() const
-	{
-		return str;
 	}
 };

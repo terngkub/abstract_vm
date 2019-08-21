@@ -39,7 +39,7 @@ bool is_overflow(Big value)
 template <typename Big, typename Small>
 bool is_underflow(Big value)
 {
-	if (value < std::numeric_limits<Small>::min())
+	if (value < std::numeric_limits<Small>::lowest())
 		return true;
 	return false;
 }
