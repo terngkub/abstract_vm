@@ -13,8 +13,8 @@ class Lexer
     int line_nb;
 
     void match();
-    bool match_unary();
-    bool match_binary();
+    bool match_plain();
+    bool match_value();
 
     // unimplemented
     Lexer();

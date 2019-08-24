@@ -5,12 +5,12 @@ void Lexer::match()
 {
 	if (current_line.size() == 0) return;
 	if (current_line[0] == ';') return;
-	if (match_unary()) return;
-	if (match_binary()) return;
+	if (match_plain()) return;
+	if (match_value()) return;
 	token_list.push_back(Token{TokenType::Error, line_nb, "not match"});
 }
 
-bool Lexer::match_unary()
+bool Lexer::match_plain()
 {
 	if (plain_inst_map.find(current_line) != plain_inst_map.end())
 	{
@@ -20,7 +20,7 @@ bool Lexer::match_unary()
 	return false;
 }
 
-bool Lexer::match_binary()
+bool Lexer::match_value()
 {
 	std::smatch matches;
 	if (std::regex_search(current_line, matches, value_inst_pattern))
