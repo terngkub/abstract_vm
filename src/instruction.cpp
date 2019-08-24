@@ -5,7 +5,7 @@ Instruction::Instruction(TokenType type) :
     operand(nullptr)
 {}
 
-Instruction::Instruction(TokenType type, IOperand * operand) :
+Instruction::Instruction(TokenType type, IOperand const * operand) :
     type(type),
     operand(operand)
 {}

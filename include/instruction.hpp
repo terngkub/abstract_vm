@@ -8,9 +8,9 @@ class Instruction
 
 public:
     TokenType type;
-    IOperand * operand;
+    IOperand const * operand;
 
     Instruction(TokenType type);
-    Instruction(TokenType type, IOperand * operand);
+    Instruction(TokenType type, IOperand const * operand);
     ~Instruction();
 };

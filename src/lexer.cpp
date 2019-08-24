@@ -7,7 +7,7 @@ void Lexer::match()
 	if (current_line[0] == ';') return;
 	if (match_plain()) return;
 	if (match_value()) return;
-	token_list.push_back(Token{TokenType::Error, line_nb, "not match"});
+	token_list.push_back(Token{TokenType::Error, line_nb, "an instruciton in unknown"});
 }
 
 bool Lexer::match_plain()
@@ -60,7 +60,10 @@ Lexer::Lexer(std::istream & is) :
 		{"exit",	TokenType::Exit}
 	},
 	value_inst_pattern{R"((push|assert) (int(?:8|16|32)|float|double)\((\-?[[:digit:]]+(?:\.[[:digit:]]+)?)\))"},
-	is(is)
+	is(is),
+	token_list{},
+	current_line{},
+	line_nb(0)
 {}
 
 Lexer::~Lexer() {}

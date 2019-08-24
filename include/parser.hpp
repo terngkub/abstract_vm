@@ -6,7 +6,7 @@
 class Parser
 {
     std::list<Token> token_list;
-    std::list<std::string> error_list;
+    std::list<std::pair<int, std::string>> error_list;
 
     Parser();
 
