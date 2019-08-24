@@ -2,21 +2,19 @@
 #include "token.hpp"
 #include <list>
 #include <regex>
-#include <array>
-
-struct Pattern
-{
-    TokenType type;
-    std::regex pat;
-    int index;
-};
 
 class Lexer
 {
+    std::map<std::string, TokenType> plain_inst_map;
+    std::regex value_inst_pattern;
     std::istream & is;
-    static std::array<Pattern, 2> patterns;
+    std::list<Token> token_list;
+    std::string current_line;
+    int line_nb;
 
-    Token match(int line_nb, std::string line);
+    void match();
+    bool match_unary();
+    bool match_binary();
 
     // unimplemented
     Lexer();

@@ -17,6 +17,7 @@ void VirtualMachine::run()
 	for (auto & token : token_list)
 		std::cout << token.str << std::endl;
 
+	/*
 	Parser parser{token_list};
 	auto inst_list = parser.parse();
 
@@ -24,4 +25,5 @@ void VirtualMachine::run()
 	{
 		(void)inst;
 	}
+	*/
 }

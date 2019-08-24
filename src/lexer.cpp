@@ -1,46 +1,77 @@
 #include "lexer.hpp"
 #include <iostream>
-#include <regex>
 
-std::array<Pattern, 2> Lexer::patterns =
-{{
-	{TokenType::exit, std::regex{"^exit$"}, 0},
-	{TokenType::add, std::regex{"^add$"}, 0}
-}};
-
-std::string error_message(int line_nb, std::string err)
+void Lexer::match()
 {
-	std::stringstream ss;
-	ss << "line " << line_nb << " : " << err;
-	return ss.str();
+	if (current_line.size() == 0) return;
+	if (current_line[0] == ';') return;
+	if (match_unary()) return;
+	if (match_binary()) return;
+	token_list.push_back(Token{TokenType::Error, line_nb, "not match"});
+}
+
+bool Lexer::match_unary()
+{
+	if (plain_inst_map.find(current_line) != plain_inst_map.end())
+	{
+		token_list.push_back(Token{plain_inst_map[current_line], line_nb, current_line});
+		return true;
+	}
+	return false;
+}
+
+bool Lexer::match_binary()
+{
+	std::smatch matches;
+	if (std::regex_search(current_line, matches, value_inst_pattern))
+	{
+		auto inst_type = (matches.str(1) == "push") ? TokenType::Push : TokenType::Assert;
+		token_list.push_back(Token{inst_type, line_nb, matches.str(1)});
+
+		if (matches.str(2).compare(0, 3, "int") == 0 && matches.str(3).find('.') != std::string::npos)
+		{
+			token_list.push_back(Token{TokenType::Error, line_nb, "integer type contain decimal point"});
+		}
+		else
+		{
+			TokenType value_type;
+			if		(matches.str(2) == "int8")	value_type = TokenType::Int8;
+			else if	(matches.str(2) == "int16")	value_type = TokenType::Int16;
+			else if	(matches.str(2) == "int32")	value_type = TokenType::Int32;
+			else if	(matches.str(2) == "float")	value_type = TokenType::Float;
+			else								value_type = TokenType::Double;
+			token_list.push_back(Token{value_type, line_nb, matches.str(3)});
+		}
+		return true;
+	}
+	return false;
 }
 
 Lexer::Lexer(std::istream & is) :
+	plain_inst_map{
+		{"pop",		TokenType::Pop},
+		{"dump",	TokenType::Dump},
+		{"add",		TokenType::Add},
+		{"sub",		TokenType::Sub},
+		{"mul",		TokenType::Mul},
+		{"div",		TokenType::Div},
+		{"mod",		TokenType::Mod},
+		{"print",	TokenType::Print},
+		{"exit",	TokenType::Exit}
+	},
+	value_inst_pattern{R"((push|assert) (int(?:8|16|32)|float|double)\((\-?[[:digit:]]+(?:\.[[:digit:]]+)?)\))"},
 	is(is)
 {}
 
 Lexer::~Lexer() {}
 
-Token Lexer::match(int line_nb, std::string line)
-{
-	for (auto & pattern : patterns)
-	{
-		std::smatch matches;
-		if (std::regex_search(line, matches, pattern.pat))
-			return Token{pattern.type, matches[pattern.index]};
-	}
-	return Token{TokenType::error, error_message(line_nb, "not match")};
-}
-
 std::list<Token> Lexer::scan()
 {
-	std::list<Token> token_list;
-	int line_nb = 0;
-
-	for (std::string line; getline(is, line); )
+	while (getline(is, current_line))
 	{
-		auto token = match(++line_nb, line);
-		token_list.push_back(token);
+		if (typeid(is) == typeid(std::cin) && current_line == ";;")
+			break;
+		match();
 	}
 	return token_list;
 }
