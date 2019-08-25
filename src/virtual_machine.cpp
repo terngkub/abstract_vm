@@ -4,6 +4,155 @@
 #include "exception.hpp"
 #include <iostream>
 
+void VirtualMachine::do_inst(Instruction & inst)
+{
+	try
+	{
+		switch(inst.type)
+		{
+			case TokenType::Push:	push(inst.operand); break;
+			case TokenType::Pop:	pop(); break;
+			case TokenType::Dump:	dump(); break;
+			case TokenType::Assert:	assert(inst.operand); break;
+			case TokenType::Add:	add(); break;
+			case TokenType::Sub:	sub(); break;
+			case TokenType::Mul:	mul(); break;
+			case TokenType::Div:	div(); break;
+			case TokenType::Mod:	mod(); break;
+			case TokenType::Print:	print(); break;
+			default: throw(AvmException("invalid instruction type"));
+		}
+	}
+	catch(AvmException const & e)
+	{
+		throw;
+	}
+}
+
+IOperand const * VirtualMachine::pop_stack()
+{
+	if (stack.empty())
+		throw AvmException("stack is empty");
+	auto operand = stack.front();
+	stack.pop_front();
+	return operand;
+}
+
+void VirtualMachine::push(IOperand const * operand)
+{
+	stack.push_front(operand);
+}
+
+void VirtualMachine::pop()
+{
+	stack.pop_front();
+}
+
+void VirtualMachine::dump()
+{
+	for(auto & elem : stack)
+	{
+		std::cout << elem->toString() << "\n";
+	}
+}
+
+void VirtualMachine::assert(IOperand const * operand)
+{
+	auto & top = stack.front();
+	if (top->getType() != operand->getType()
+			|| top->toString() != operand->toString())
+		throw AvmException("assert instruction is not true");
+}
+
+void VirtualMachine::add()
+{
+	try
+	{
+		auto left = pop_stack();
+		auto right = pop_stack();
+		stack.push_front(*left + *right);
+	}
+	catch (AvmException const & e)
+	{
+		throw;
+	}
+}
+
+void VirtualMachine::sub()
+{
+	try
+	{
+		auto left = pop_stack();
+		auto right = pop_stack();
+		stack.push_front(*left - *right);
+	}
+	catch (AvmException const & e)
+	{
+		throw;
+	}
+}
+
+void VirtualMachine::mul()
+{
+	try
+	{
+		auto left = pop_stack();
+		auto right = pop_stack();
+		stack.push_front(*left * *right);
+	}
+	catch (AvmException const & e)
+	{
+		throw;
+	}
+}
+
+void VirtualMachine::div()
+{
+	try
+	{
+		auto left = pop_stack();
+		auto right = pop_stack();
+		stack.push_front(*left / *right);
+	}
+	catch (AvmException const & e)
+	{
+		throw;
+	}
+}
+
+void VirtualMachine::mod()
+{
+	try
+	{
+		auto left = pop_stack();
+		auto right = pop_stack();
+		stack.push_front(*left % *right);
+	}
+	catch (AvmException const & e)
+	{
+		throw;
+	}
+}
+
+void VirtualMachine::print()
+{
+	try
+	{
+		auto & top = stack.front();
+		if (top->getType() != eOperandType::Int8)
+			throw AvmException("operand type is not int8");
+		std::stringstream ss{top->toString()};
+		int c;
+		ss >> c;
+		std::cout << static_cast<char>(c) << "\n";
+	}
+	catch(AvmException const & e)
+	{
+		throw;
+	}
+	
+}
+
 VirtualMachine::VirtualMachine(std::istream & is) :
 	is(is)
 {}
@@ -17,24 +166,19 @@ void VirtualMachine::run()
 		Lexer lexer{is};
 		auto token_list = lexer.scan();
 
-		// for test only
-		std::cout << "Lexer result\n";
-		for (auto & token : token_list)
-			std::cout << token.str << std::endl;
-
 		Parser parser{token_list};
 		auto inst_list = parser.parse();
+
+		for (auto & inst : inst_list)
+		{
+			if (inst.type == TokenType::Exit)
+				break;
+			do_inst(inst);
+		}
 	}
 	catch (AvmException const & e)
 	{
-		std::cerr << e.what();
+		std::cerr << e.what() << "\n";
 		return;
 	}
-
-	/*
-	for (auto & inst : inst_list)
-	{
-		std::cout << inst.type << std::endl;
-	}
-	*/
 }

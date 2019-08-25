@@ -21,7 +21,7 @@ std::list<Instruction> Parser::parse()
 		}
 		else if (it->type == TokenType::Push || it->type == TokenType::Assert)
 		{
-			auto & tmp = it;
+			auto & tmp = *it;
 			++it;
 			IOperand const * operand;
 			try
@@ -35,7 +35,7 @@ std::list<Instruction> Parser::parse()
 					case TokenType::Double:	operand = factory().createOperand(eOperandType::Double, it->str); break;
 					default: throw AvmException(it->str);
 				}
-				inst_list.push_back(Instruction{tmp->type, operand});
+				inst_list.push_back(Instruction{tmp.type, operand});
 			}
 			catch(AvmException const & e)
 			{
