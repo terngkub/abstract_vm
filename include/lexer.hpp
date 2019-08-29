@@ -6,6 +6,12 @@
 
 class Lexer
 {
+public:
+    Lexer(std::istream & is);
+    ~Lexer();
+    std::list<Token> scan();
+
+private:
     std::unordered_map<std::string, TokenType> plain_inst_map;
     std::regex plain_inst_pattern;
     std::regex value_inst_pattern;
@@ -20,9 +26,4 @@ class Lexer
 
     // unimplemented
     Lexer();
-    
-public:
-    Lexer(std::istream & is);
-    ~Lexer();
-    std::list<Token> scan();
 };

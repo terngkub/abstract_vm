@@ -3,6 +3,36 @@
 #include "exception.hpp"
 #include <iostream>
 
+// Public
+
+Factory::Factory() :
+	func_ptr
+	{
+		&Factory::createInt8,
+		&Factory::createInt16,
+		&Factory::createInt32,
+		&Factory::createFloat,
+		&Factory::createDouble
+	}
+{}
+
+Factory::~Factory()
+{
+}
+
+IOperand const *Factory::createOperand(eOperandType type, std::string const &value) const
+{
+	return (this->*func_ptr[type])(value);
+}
+
+Factory & factory()
+{
+	static Factory instance;
+	return instance;
+}
+
+// Private
+
 IOperand const *Factory::createInt8(std::string const &value) const
 {
 	long long big_n = std::stoll(value);
@@ -66,30 +96,4 @@ IOperand const *Factory::createDouble(std::string const &value) const
 
 	double small_n = static_cast<double>(big_n);
 	return (new Operand<double>(small_n));
-}
-
-Factory::Factory() :
-	func_ptr
-	{
-		&Factory::createInt8,
-		&Factory::createInt16,
-		&Factory::createInt32,
-		&Factory::createFloat,
-		&Factory::createDouble
-	}
-{}
-
-Factory::~Factory()
-{
-}
-
-IOperand const *Factory::createOperand(eOperandType type, std::string const &value) const
-{
-	return (this->*func_ptr[type])(value);
-}
-
-Factory & factory()
-{
-	static Factory instance;
-	return instance;
 }

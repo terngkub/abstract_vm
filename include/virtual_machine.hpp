@@ -5,15 +5,16 @@
 
 class VirtualMachine
 {
+public:
+    VirtualMachine(std::istream & is);
+    ~VirtualMachine();
+    void run();
+
+private:
     std::istream & is;
     std::list<IOperand const *> stack;
 
-    VirtualMachine();
-
-    // utils
     IOperand const * pop_stack();
-
-    // do instruction
     void do_inst(Instruction & inst);
     void push(IOperand const * operand);
     void pop();
@@ -27,8 +28,6 @@ class VirtualMachine
     void print();
     void exit();
 
-public:
-    VirtualMachine(std::istream & is);
-    ~VirtualMachine();
-    void run();
+    // unimplemented
+    VirtualMachine();
 };

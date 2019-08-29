@@ -1,6 +1,43 @@
 #include "lexer.hpp"
 #include <iostream>
 
+// Public
+
+Lexer::Lexer(std::istream & is) :
+	plain_inst_map{
+		{"pop",		TokenType::Pop},
+		{"dump",	TokenType::Dump},
+		{"add",		TokenType::Add},
+		{"sub",		TokenType::Sub},
+		{"mul",		TokenType::Mul},
+		{"div",		TokenType::Div},
+		{"mod",		TokenType::Mod},
+		{"print",	TokenType::Print},
+		{"exit",	TokenType::Exit}
+	},
+	plain_inst_pattern{R"((pop|dump|add|sub|mul|div|mod|print|exit)(?:[[:space:]]*?;.*)?)"},
+	value_inst_pattern{R"((push|assert) (int(?:8|16|32)|float|double)\((\-?[[:digit:]]+(?:\.[[:digit:]]+)?)\)(?:[[:space:]]*?;.*)?)"},
+	is(is),
+	token_list{},
+	current_line{},
+	line_nb(1)
+{}
+
+Lexer::~Lexer() {}
+
+std::list<Token> Lexer::scan()
+{
+	while (getline(is, current_line))
+	{
+		if (typeid(is) == typeid(std::cin) && current_line == ";;")
+			break;
+		match();
+	}
+	return token_list;
+}
+
+// Private
+
 void Lexer::match()
 {
 	if (current_line.size() == 0) return;
@@ -46,37 +83,4 @@ bool Lexer::match_value()
 		return true;
 	}
 	return false;
-}
-
-Lexer::Lexer(std::istream & is) :
-	plain_inst_map{
-		{"pop",		TokenType::Pop},
-		{"dump",	TokenType::Dump},
-		{"add",		TokenType::Add},
-		{"sub",		TokenType::Sub},
-		{"mul",		TokenType::Mul},
-		{"div",		TokenType::Div},
-		{"mod",		TokenType::Mod},
-		{"print",	TokenType::Print},
-		{"exit",	TokenType::Exit}
-	},
-	plain_inst_pattern{R"((pop|dump|add|sub|mul|div|mod|print|exit)(?:[[:space:]]*?;.*)?)"},
-	value_inst_pattern{R"((push|assert) (int(?:8|16|32)|float|double)\((\-?[[:digit:]]+(?:\.[[:digit:]]+)?)\)(?:[[:space:]]*?;.*)?)"},
-	is(is),
-	token_list{},
-	current_line{},
-	line_nb(1)
-{}
-
-Lexer::~Lexer() {}
-
-std::list<Token> Lexer::scan()
-{
-	while (getline(is, current_line))
-	{
-		if (typeid(is) == typeid(std::cin) && current_line == ";;")
-			break;
-		match();
-	}
-	return token_list;
 }

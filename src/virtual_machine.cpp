@@ -4,6 +4,40 @@
 #include "exception.hpp"
 #include <iostream>
 
+// Public
+
+VirtualMachine::VirtualMachine(std::istream & is) :
+	is(is)
+{}
+
+VirtualMachine::~VirtualMachine() {}
+
+void VirtualMachine::run()
+{
+	try
+	{
+		Lexer lexer{is};
+		auto token_list = lexer.scan();
+
+		Parser parser{token_list};
+		auto inst_list = parser.parse();
+
+		for (auto & inst : inst_list)
+		{
+			if (inst.type == TokenType::Exit)
+				break;
+			do_inst(inst);
+		}
+	}
+	catch (AvmException const & e)
+	{
+		std::cerr << e.what() << "\n";
+		return;
+	}
+}
+
+// Private
+
 void VirtualMachine::do_inst(Instruction & inst)
 {
 	try
@@ -151,34 +185,4 @@ void VirtualMachine::print()
 		throw;
 	}
 	
-}
-
-VirtualMachine::VirtualMachine(std::istream & is) :
-	is(is)
-{}
-
-VirtualMachine::~VirtualMachine() {}
-
-void VirtualMachine::run()
-{
-	try
-	{
-		Lexer lexer{is};
-		auto token_list = lexer.scan();
-
-		Parser parser{token_list};
-		auto inst_list = parser.parse();
-
-		for (auto & inst : inst_list)
-		{
-			if (inst.type == TokenType::Exit)
-				break;
-			do_inst(inst);
-		}
-	}
-	catch (AvmException const & e)
-	{
-		std::cerr << e.what() << "\n";
-		return;
-	}
 }

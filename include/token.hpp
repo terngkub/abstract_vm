@@ -12,8 +12,6 @@ enum class TokenType
 
 class Token
 {
-	Token();
-
 public:
 	TokenType type;
 	int line_nb;
@@ -21,4 +19,8 @@ public:
 
 	Token(TokenType, int line_nb, std::string);
 	~Token();
+
+private:
+	// unimplemented
+	Token();
 };
