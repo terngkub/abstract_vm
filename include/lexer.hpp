@@ -2,10 +2,12 @@
 #include "token.hpp"
 #include <list>
 #include <regex>
+#include <unordered_map>
 
 class Lexer
 {
-    std::map<std::string, TokenType> plain_inst_map;
+    std::unordered_map<std::string, TokenType> plain_inst_map;
+    std::regex plain_inst_pattern;
     std::regex value_inst_pattern;
     std::istream & is;
     std::list<Token> token_list;

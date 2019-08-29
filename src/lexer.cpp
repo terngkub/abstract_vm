@@ -12,9 +12,10 @@ void Lexer::match()
 
 bool Lexer::match_plain()
 {
-	if (plain_inst_map.find(current_line) != plain_inst_map.end())
+	std::smatch matches;
+	if (std::regex_search(current_line, matches, plain_inst_pattern))
 	{
-		token_list.push_back(Token{plain_inst_map[current_line], line_nb, current_line});
+		token_list.push_back(Token{plain_inst_map[matches[1]], line_nb, matches[1]});
 		return true;
 	}
 	return false;
@@ -59,11 +60,12 @@ Lexer::Lexer(std::istream & is) :
 		{"print",	TokenType::Print},
 		{"exit",	TokenType::Exit}
 	},
-	value_inst_pattern{R"((push|assert) (int(?:8|16|32)|float|double)\((\-?[[:digit:]]+(?:\.[[:digit:]]+)?)\))"},
+	plain_inst_pattern{R"((pop|dump|add|sub|mul|div|mod|print|exit)(?:[[:space:]]*?;.*)?)"},
+	value_inst_pattern{R"((push|assert) (int(?:8|16|32)|float|double)\((\-?[[:digit:]]+(?:\.[[:digit:]]+)?)\)(?:[[:space:]]*?;.*)?)"},
 	is(is),
 	token_list{},
 	current_line{},
-	line_nb(0)
+	line_nb(1)
 {}
 
 Lexer::~Lexer() {}
