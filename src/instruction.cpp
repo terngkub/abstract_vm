@@ -5,9 +5,9 @@ Instruction::Instruction(TokenType type) :
     operand(nullptr)
 {}
 
-Instruction::Instruction(TokenType type, IOperand const * operand) :
+Instruction::Instruction(TokenType type, OperandPtr && operand) :
     type(type),
-    operand(operand)
+    operand(std::move(operand))
 {}
 
 Instruction::~Instruction() {}

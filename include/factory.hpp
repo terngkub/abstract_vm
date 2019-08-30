@@ -9,6 +9,7 @@ public:
     Factory();
     ~Factory();
 
+	OperandPtr createOperandPtr(eOperandType type, std::string const & value) const;
 	IOperand const * createOperand(eOperandType type, std::string const & value) const;
 
 private:

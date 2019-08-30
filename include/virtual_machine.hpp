@@ -12,14 +12,14 @@ public:
 
 private:
     std::istream & is;
-    std::list<IOperand const *> stack;
+    std::list<OperandPtr> stack;
 
-    IOperand const * pop_stack();
+    OperandPtr pop_stack();
     void do_inst(Instruction & inst);
-    void push(IOperand const * operand);
+    void push(OperandPtr && operand);
     void pop();
     void dump();
-    void assert(IOperand const * operand);
+    void assert(OperandPtr && operand);
     void add();
     void sub();
     void mul();

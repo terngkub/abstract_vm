@@ -44,10 +44,10 @@ void VirtualMachine::do_inst(Instruction & inst)
 	{
 		switch(inst.type)
 		{
-			case TokenType::Push:	push(inst.operand); break;
+			case TokenType::Push:	push(std::move(inst.operand)); break;
 			case TokenType::Pop:	pop(); break;
 			case TokenType::Dump:	dump(); break;
-			case TokenType::Assert:	assert(inst.operand); break;
+			case TokenType::Assert:	assert(std::move(inst.operand)); break;
 			case TokenType::Add:	add(); break;
 			case TokenType::Sub:	sub(); break;
 			case TokenType::Mul:	mul(); break;
@@ -63,18 +63,18 @@ void VirtualMachine::do_inst(Instruction & inst)
 	}
 }
 
-IOperand const * VirtualMachine::pop_stack()
+OperandPtr VirtualMachine::pop_stack()
 {
 	if (stack.empty())
 		throw AvmException("stack is empty");
-	auto operand = stack.front();
+	auto operand = std::move(stack.front());
 	stack.pop_front();
 	return operand;
 }
 
-void VirtualMachine::push(IOperand const * operand)
+void VirtualMachine::push(OperandPtr && operand)
 {
-	stack.push_front(operand);
+	stack.push_front(std::move(operand));
 }
 
 void VirtualMachine::pop()
@@ -90,7 +90,7 @@ void VirtualMachine::dump()
 	}
 }
 
-void VirtualMachine::assert(IOperand const * operand)
+void VirtualMachine::assert(OperandPtr && operand)
 {
 	auto & top = stack.front();
 	if (top->getType() != operand->getType()
@@ -104,7 +104,7 @@ void VirtualMachine::add()
 	{
 		auto left = pop_stack();
 		auto right = pop_stack();
-		stack.push_front(*left + *right);
+		stack.push_front(OperandPtr(*left + *right));
 	}
 	catch (AvmException const & e)
 	{
@@ -118,7 +118,7 @@ void VirtualMachine::sub()
 	{
 		auto left = pop_stack();
 		auto right = pop_stack();
-		stack.push_front(*left - *right);
+		stack.push_front(OperandPtr(*left - *right));
 	}
 	catch (AvmException const & e)
 	{
@@ -132,7 +132,7 @@ void VirtualMachine::mul()
 	{
 		auto left = pop_stack();
 		auto right = pop_stack();
-		stack.push_front(*left * *right);
+		stack.push_front(OperandPtr(*left * *right));
 	}
 	catch (AvmException const & e)
 	{
@@ -146,7 +146,7 @@ void VirtualMachine::div()
 	{
 		auto left = pop_stack();
 		auto right = pop_stack();
-		stack.push_front(*left / *right);
+		stack.push_front(OperandPtr(*left / *right));
 	}
 	catch (AvmException const & e)
 	{
@@ -160,7 +160,7 @@ void VirtualMachine::mod()
 	{
 		auto left = pop_stack();
 		auto right = pop_stack();
-		stack.push_front(*left % *right);
+		stack.push_front(OperandPtr(*left % *right));
 	}
 	catch (AvmException const & e)
 	{

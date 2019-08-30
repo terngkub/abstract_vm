@@ -35,7 +35,7 @@ std::list<Instruction> Parser::parse()
 					case TokenType::Double:	operand = factory().createOperand(eOperandType::Double, it->str); break;
 					default: throw AvmException(it->str);
 				}
-				inst_list.push_back(Instruction{tmp.type, operand});
+				inst_list.push_back(Instruction(tmp.type, OperandPtr(operand)));
 			}
 			catch(AvmException const & e)
 			{
@@ -44,7 +44,7 @@ std::list<Instruction> Parser::parse()
 		}
 		else
 		{
-			inst_list.push_back(Instruction{it->type});
+			inst_list.push_back(Instruction(it->type));
 		}
 	}
 	// TODO check if contain exit

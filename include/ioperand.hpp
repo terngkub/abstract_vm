@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <memory>
 
 enum eOperandType
 {
@@ -23,3 +24,5 @@ public:
 	virtual std::string const & toString() const = 0;
 	virtual ~IOperand() {}
 };
+
+typedef std::unique_ptr<IOperand const> OperandPtr;
