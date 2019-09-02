@@ -7,8 +7,22 @@
 class Lexer
 {
 public:
+    // Constructor
+    Lexer() = delete;
     Lexer(std::istream & is);
-    ~Lexer();
+
+    // Destructor
+    ~Lexer() = default;
+
+    // Copy - disable
+    Lexer(Lexer const &) = delete;
+    Lexer & operator=(Lexer const &) = delete;
+
+    // Move - disable
+    Lexer(Lexer &&) = delete;
+    Lexer & operator=(Lexer &&) = delete;
+
+    // Public Methods
     std::list<Token> scan();
 
 private:
@@ -23,7 +37,4 @@ private:
     void match();
     bool match_plain();
     bool match_value();
-
-    // unimplemented
-    Lexer();
 };

@@ -6,10 +6,21 @@
 class Factory
 {
 public:
+	// Constructor
     Factory();
-    ~Factory();
 
-	OperandPtr createOperandPtr(eOperandType type, std::string const & value) const;
+	// Destructor
+    ~Factory() = default;
+
+	// Copy - disable
+	Factory(Factory const &) = delete;
+	Factory & operator=(Factory const &) = delete;
+
+	// Move - disable
+	Factory(Factory &&) = delete;
+	Factory & operator=(Factory &&) = delete;
+
+	// Public Methods
 	IOperand const * createOperand(eOperandType type, std::string const & value) const;
 
 private:
@@ -20,25 +31,21 @@ private:
 	IOperand const * createFloat(std::string const & value) const;
 	IOperand const * createDouble(std::string const & value) const;
 
-	// unimplemented
-    Factory(Factory const & src);
-    Factory & operator=(Factory const & rhs);
+	template <typename Big, typename Small>
+	bool is_overflow(Big value) const
+	{
+		if (value > std::numeric_limits<Small>::max())
+			return true;
+		return false;
+	}
+
+	template <typename Big, typename Small>
+	bool is_underflow(Big value) const
+	{
+		if (value < std::numeric_limits<Small>::lowest())
+			return true;
+		return false;
+	}
 };
 
 Factory & factory();
-
-template <typename Big, typename Small>
-bool is_overflow(Big value)
-{
-	if (value > std::numeric_limits<Small>::max())
-		return true;
-	return false;
-}
-
-template <typename Big, typename Small>
-bool is_underflow(Big value)
-{
-	if (value < std::numeric_limits<Small>::lowest())
-		return true;
-	return false;
-}

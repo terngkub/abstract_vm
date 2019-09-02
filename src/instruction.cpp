@@ -9,5 +9,3 @@ Instruction::Instruction(TokenType type, OperandPtr && operand) :
     type(type),
     operand(std::move(operand))
 {}
-
-Instruction::~Instruction() {}

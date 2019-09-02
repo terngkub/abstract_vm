@@ -10,8 +10,6 @@ VirtualMachine::VirtualMachine(std::istream & is) :
 	is(is)
 {}
 
-VirtualMachine::~VirtualMachine() {}
-
 void VirtualMachine::run()
 {
 	try

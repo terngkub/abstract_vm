@@ -2,6 +2,7 @@
 #include <string>
 #include <memory>
 
+// TODO use enum class
 enum eOperandType
 {
 	Int8 = 0,
@@ -25,4 +26,4 @@ public:
 	virtual ~IOperand() {}
 };
 
-typedef std::unique_ptr<IOperand const> OperandPtr;
+using OperandPtr = std::unique_ptr<IOperand const>;

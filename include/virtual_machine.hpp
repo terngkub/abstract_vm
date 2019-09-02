@@ -6,8 +6,22 @@
 class VirtualMachine
 {
 public:
+    // Constructor
+    VirtualMachine() = delete;
     VirtualMachine(std::istream & is);
-    ~VirtualMachine();
+
+    // Destructor
+    ~VirtualMachine() = default;
+
+    // Copy - disable
+    VirtualMachine(VirtualMachine const &) = delete;
+    VirtualMachine & operator=(VirtualMachine const &) = delete;
+
+    // Move - disable
+    VirtualMachine(VirtualMachine &&) = delete;
+    VirtualMachine & operator=(VirtualMachine &&) = delete;
+
+    // Public Methods
     void run();
 
 private:
@@ -27,7 +41,4 @@ private:
     void mod();
     void print();
     void exit();
-
-    // unimplemented
-    VirtualMachine();
 };

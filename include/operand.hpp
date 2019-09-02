@@ -8,15 +8,15 @@
 #include <cmath>
 #include <iostream>
 
-typedef std::variant<long long, long double> var_t;
 
 template <typename T>
 class Operand : public IOperand
 {
+using var_t = std::variant<long long, long double>;
+
 public:
-
-	// Constructor and Destructor
-
+	// Constructor
+	Operand() = delete;
 	Operand(T value) :
 		precision(0),
 		type(eOperandType::Int8),
@@ -31,17 +31,23 @@ public:
 		// TODO else throw
 	}
 
-	~Operand() {}
+	// Destructor
+	~Operand() = default;
 
+	// Copy - enable
+	Operand(Operand const &) = default;
+	Operand & operator=(Operand const &) = default;
 
-	// Getter
+	// Move - enable
+	Operand(Operand &&) = default;
+	Operand & operator=(Operand &&) = default;
 
+	// Getters
 	int getPrecision() const { return precision; }
 	eOperandType getType() const { return type; }
 	std::string const & toString() const { return str; }
 
-
-	// Operations
+	// Operator Overloads
 
 	IOperand const * operator+(IOperand const & rhs) const
 	{
@@ -95,9 +101,4 @@ private:
 				result_val);
 		return factory().createOperand(new_type, result_str);
 	}
-
-	// unimplemented
-	Operand();
-	Operand(Operand const & src) {}
-	Operand & operator=(Operand const & rhs) {}
 };

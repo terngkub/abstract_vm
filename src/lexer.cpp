@@ -23,8 +23,6 @@ Lexer::Lexer(std::istream & is) :
 	line_nb(1)
 {}
 
-Lexer::~Lexer() {}
-
 std::list<Token> Lexer::scan()
 {
 	while (getline(is, current_line))

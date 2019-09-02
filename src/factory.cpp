@@ -16,15 +16,6 @@ Factory::Factory() :
 	}
 {}
 
-Factory::~Factory()
-{
-}
-
-OperandPtr Factory::createOperandPtr(eOperandType type, std::string const & value) const
-{
-	return OperandPtr(createOperand(type, value));
-}
-
 IOperand const *Factory::createOperand(eOperandType type, std::string const &value) const
 {
 	return (this->*func_ptr[type])(value);

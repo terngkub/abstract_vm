@@ -8,8 +8,6 @@ Parser::Parser(std::list<Token> token_list) :
 	error_list{}
 {}
 
-Parser::~Parser() {}
-
 std::list<Instruction> Parser::parse()
 {
 	std::list<Instruction> inst_list;

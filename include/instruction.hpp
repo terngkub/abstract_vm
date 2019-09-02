@@ -9,18 +9,19 @@ public:
 	TokenType type;
 	OperandPtr operand;
 
+	// Constructor
+	Instruction() = delete;
 	Instruction(TokenType type);
 	Instruction(TokenType type, OperandPtr && operand);
-	~Instruction();
+
+	// Destructor
+	~Instruction() = default;
+
+	// Copy - disable
+	Instruction(Instruction const &) = delete;
+	Instruction & operator=(Instruction const &) = delete;
+
+	// Move - enable
 	Instruction(Instruction &&) = default;
 	Instruction & operator=(Instruction &&) = default;
-
-
-	//Instruction(Instruction const && rhs) { std::swap(this, rhs); }
-
-private:
-/*
-	Instruction();
-	Instruction(Instruction const &);
-	*/
 };

@@ -5,5 +5,3 @@ Token::Token(TokenType type, int line_nb, std::string str) :
     line_nb(line_nb),
     str(str)
 {}
-
-Token::~Token() {}

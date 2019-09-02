@@ -13,14 +13,22 @@ enum class TokenType
 class Token
 {
 public:
+	// Constructor
+	Token() = delete;
+	Token(TokenType, int line_nb, std::string);
+
+	// Destructor
+	~Token() = default;
+
+	// Copy - enable
+	Token(Token const &) = default;
+	Token & operator=(Token const &) = default;
+
+	// Move - enable
+	Token(Token &&) = default;
+	Token & operator=(Token &&) = default;
+
 	TokenType type;
 	int line_nb;
 	std::string str;
-
-	Token(TokenType, int line_nb, std::string);
-	~Token();
-
-private:
-	// unimplemented
-	Token();
 };
