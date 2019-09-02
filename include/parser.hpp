@@ -27,4 +27,5 @@ public:
 private:
     std::list<Token> token_list;
     std::list<std::pair<int, std::string>> error_list;
+    bool has_exit;
 };

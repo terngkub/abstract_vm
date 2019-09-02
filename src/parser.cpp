@@ -5,7 +5,8 @@
 
 Parser::Parser(std::list<Token> token_list) :
 	token_list(token_list),
-	error_list{}
+	error_list{},
+	has_exit{false}
 {}
 
 std::list<Instruction> Parser::parse()
@@ -42,18 +43,19 @@ std::list<Instruction> Parser::parse()
 		}
 		else
 		{
+			if (it->type == TokenType::Exit)
+				has_exit = true;
 			inst_list.push_back(Instruction(it->type));
 		}
 	}
-	// TODO check if contain exit
-	if (!error_list.empty())
+	if (!error_list.empty() || !has_exit)
 	{
 		std::stringstream ss;
 		ss << "Error: there is at least one error in the input\n";
 		for (auto & err : error_list)
-		{
 			ss << "Line " << err.first << ": " << err.second << std::endl;
-		}
+		if (!has_exit)
+			ss << "The program doesn't have an exit instruction\n";
 		throw AvmException(ss.str());
 	}
 	return inst_list;

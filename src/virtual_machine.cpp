@@ -29,7 +29,7 @@ void VirtualMachine::run()
 	}
 	catch (AvmException const & e)
 	{
-		std::cerr << e.what() << "\n";
+		std::cerr << e.what();
 		return;
 	}
 }
@@ -182,5 +182,4 @@ void VirtualMachine::print() const
 	{
 		throw;
 	}
-	
 }

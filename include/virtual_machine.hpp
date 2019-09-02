@@ -40,5 +40,4 @@ private:
     void div();
     void mod();
     void print() const;
-    void exit();
 };
