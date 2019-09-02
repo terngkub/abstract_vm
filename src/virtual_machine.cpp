@@ -80,17 +80,17 @@ void VirtualMachine::pop()
 	stack.pop_front();
 }
 
-void VirtualMachine::dump()
+void VirtualMachine::dump() const
 {
-	for(auto & elem : stack)
+	for(auto const & elem : stack)
 	{
 		std::cout << elem->toString() << "\n";
 	}
 }
 
-void VirtualMachine::assert(OperandPtr && operand)
+void VirtualMachine::assert(OperandPtr && operand) const
 {
-	auto & top = stack.front();
+	auto const & top = stack.front();
 	if (top->getType() != operand->getType()
 			|| top->toString() != operand->toString())
 		throw AvmException("assert instruction is not true");
@@ -166,11 +166,11 @@ void VirtualMachine::mod()
 	}
 }
 
-void VirtualMachine::print()
+void VirtualMachine::print() const
 {
 	try
 	{
-		auto & top = stack.front();
+		auto const & top = stack.front();
 		if (top->getType() != eOperandType::Int8)
 			throw AvmException("operand type is not int8");
 		std::stringstream ss{top->toString()};

@@ -32,13 +32,13 @@ private:
     void do_inst(Instruction & inst);
     void push(OperandPtr && operand);
     void pop();
-    void dump();
-    void assert(OperandPtr && operand);
+    void dump() const;
+    void assert(OperandPtr && operand) const;
     void add();
     void sub();
     void mul();
     void div();
     void mod();
-    void print();
+    void print() const;
     void exit();
 };
