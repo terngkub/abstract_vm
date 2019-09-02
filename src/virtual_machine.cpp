@@ -55,9 +55,11 @@ void VirtualMachine::do_inst(Instruction & inst)
 			default: throw(AvmException("invalid instruction type"));
 		}
 	}
-	catch(AvmException const & e)
+	catch(AvmException & e)
 	{
-		throw;
+		std::stringstream ss;
+		ss << "Line " << inst.line_nb << " : " << e.what() << std::endl;
+		throw AvmException(ss.str());
 	}
 }
 
@@ -77,6 +79,8 @@ void VirtualMachine::push(OperandPtr && operand)
 
 void VirtualMachine::pop()
 {
+	if (stack.empty())
+		throw AvmException("stack is empty");
 	stack.pop_front();
 }
 
@@ -98,88 +102,46 @@ void VirtualMachine::assert(OperandPtr && operand) const
 
 void VirtualMachine::add()
 {
-	try
-	{
-		auto left = pop_stack();
-		auto right = pop_stack();
-		stack.push_front(OperandPtr(*left + *right));
-	}
-	catch (AvmException const & e)
-	{
-		throw;
-	}
+	auto right = pop_stack();
+	auto left = pop_stack();
+	stack.push_front(OperandPtr(*left + *right));
 }
 
 void VirtualMachine::sub()
 {
-	try
-	{
-		auto left = pop_stack();
-		auto right = pop_stack();
-		stack.push_front(OperandPtr(*left - *right));
-	}
-	catch (AvmException const & e)
-	{
-		throw;
-	}
+	auto right = pop_stack();
+	auto left = pop_stack();
+	stack.push_front(OperandPtr(*left - *right));
 }
 
 void VirtualMachine::mul()
 {
-	try
-	{
-		auto left = pop_stack();
-		auto right = pop_stack();
-		stack.push_front(OperandPtr(*left * *right));
-	}
-	catch (AvmException const & e)
-	{
-		throw;
-	}
+	auto right = pop_stack();
+	auto left = pop_stack();
+	stack.push_front(OperandPtr(*left * *right));
 }
 
 void VirtualMachine::div()
 {
-	try
-	{
-		auto left = pop_stack();
-		auto right = pop_stack();
-		stack.push_front(OperandPtr(*left / *right));
-	}
-	catch (AvmException const & e)
-	{
-		throw;
-	}
+	auto right = pop_stack();
+	auto left = pop_stack();
+	stack.push_front(OperandPtr(*left / *right));
 }
 
 void VirtualMachine::mod()
 {
-	try
-	{
-		auto left = pop_stack();
-		auto right = pop_stack();
-		stack.push_front(OperandPtr(*left % *right));
-	}
-	catch (AvmException const & e)
-	{
-		throw;
-	}
+	auto right = pop_stack();
+	auto left = pop_stack();
+	stack.push_front(OperandPtr(*left % *right));
 }
 
 void VirtualMachine::print() const
 {
-	try
-	{
-		auto const & top = stack.front();
-		if (top->getType() != eOperandType::Int8)
-			throw AvmException("operand type is not int8");
-		std::stringstream ss{top->toString()};
-		int c;
-		ss >> c;
-		std::cout << static_cast<char>(c) << "\n";
-	}
-	catch(AvmException const & e)
-	{
-		throw;
-	}
+	auto const & top = stack.front();
+	if (top->getType() != eOperandType::Int8)
+		throw AvmException("operand type is not int8");
+	std::stringstream ss{top->toString()};
+	int c;
+	ss >> c;
+	std::cout << static_cast<char>(c) << "\n";
 }

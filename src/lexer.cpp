@@ -20,13 +20,14 @@ Lexer::Lexer(std::istream & is) :
 	is(is),
 	token_list{},
 	current_line{},
-	line_nb(1)
+	line_nb(0)
 {}
 
 std::list<Token> Lexer::scan()
 {
 	while (getline(is, current_line))
 	{
+		++line_nb;
 		if (typeid(is) == typeid(std::cin) && current_line == ";;")
 			break;
 		match();

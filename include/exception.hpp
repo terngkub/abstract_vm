@@ -21,7 +21,7 @@ public:
     AvmException & operator=(AvmException &&) = default;
 
     // Public Methods
-    const char * what() const noexcept;
+    virtual const char * what() const noexcept;
 
 private:
     std::string str;

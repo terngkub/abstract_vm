@@ -31,7 +31,9 @@ Factory & factory()
 
 IOperand const *Factory::createInt8(std::string const &value) const
 {
-	long long big_n = std::stoll(value);
+	std::stringstream ss{value};
+	long long big_n;
+	ss >> big_n;
 
 	if (is_overflow<long long, int8_t>(big_n))
 		throw AvmException("Overflow on a value");
@@ -44,7 +46,9 @@ IOperand const *Factory::createInt8(std::string const &value) const
 
 IOperand const *Factory::createInt16(std::string const &value) const
 {
-	long long big_n = std::stoll(value);
+	std::stringstream ss{value};
+	long long big_n;
+	ss >> big_n;
 
 	if (is_overflow<long long, int16_t>(big_n))
 		throw AvmException("Overflow on a value");
@@ -57,7 +61,9 @@ IOperand const *Factory::createInt16(std::string const &value) const
 
 IOperand const *Factory::createInt32(std::string const &value) const
 {
-	long long big_n = std::stoll(value);
+	std::stringstream ss{value};
+	long long big_n;
+	ss >> big_n;
 
 	if (is_overflow<long long, int32_t>(big_n))
 		throw AvmException("Overflow on a value");
@@ -70,7 +76,9 @@ IOperand const *Factory::createInt32(std::string const &value) const
 
 IOperand const *Factory::createFloat(std::string const &value) const
 {
-	long double big_n = std::stold(value);
+	std::stringstream ss{value};
+	long double big_n;
+	ss >> big_n;
 
 	if (is_overflow<long double, float>(big_n))
 		throw AvmException("Overflow on a value");
@@ -83,7 +91,9 @@ IOperand const *Factory::createFloat(std::string const &value) const
 
 IOperand const *Factory::createDouble(std::string const &value) const
 {
-	long double big_n = std::stold(value);
+	std::stringstream ss{value};
+	long double big_n;
+	ss >> big_n;
 
 	if (is_overflow<long double, double>(big_n))
 		throw AvmException("Overflow on a value");

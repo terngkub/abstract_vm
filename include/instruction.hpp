@@ -7,12 +7,13 @@ class Instruction
 public:
 	// TODO getter with const
 	TokenType type;
+	int line_nb;
 	OperandPtr operand;
 
 	// Constructor
 	Instruction() = delete;
-	Instruction(TokenType type);
-	Instruction(TokenType type, OperandPtr && operand);
+	Instruction(TokenType type, int line_nb);
+	Instruction(TokenType type, int line_nb, OperandPtr && operand);
 
 	// Destructor
 	~Instruction() = default;
