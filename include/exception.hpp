@@ -2,50 +2,32 @@
 #include <exception>
 #include <string>
 
-class AvmException : public std::exception
-{
-public:
-    // Constructor
-    AvmException() = delete;
-    AvmException(std::string str);
+class ParsingException : public std::exception {};
+class RuntimeException : public std::exception {};
 
-    // Destructor
-    ~AvmException() = default;
+class OverflowException : public ParsingException, public RuntimeException
+{ public: virtual const char * what() const noexcept; };
 
-    // Copy - enable
-    AvmException(AvmException const &) = default;
-    AvmException & operator=(AvmException const &) = default;
+class UnderflowException : public ParsingException, public RuntimeException
+{ public: virtual const char * what() const noexcept; };
 
-    // Move - enable
-    AvmException(AvmException &&) = default;
-    AvmException & operator=(AvmException &&) = default;
+class EmptyStackException : public RuntimeException
+{ public: virtual const char * what() const noexcept; };
 
-    // Public Methods
-    virtual const char * what() const noexcept;
+class DivisionByZeroException : public RuntimeException
+{ public: virtual const char * what() const noexcept; };
 
-private:
-    std::string str;
-};
+class ModuloByZeroException : public RuntimeException
+{ public: virtual const char * what() const noexcept; };
 
-/*
-# Parsing errors
+class FalseAssertionException : public RuntimeException
+{ public: virtual const char * what() const noexcept; };
 
-# Runtime erros:
-Division by zero
-Modulo by zero
-Overflow
-Underflow
-Empty stack
-+ StackSizeLessThanTwo
-Assertion false
-Print type isn't int8
+class StackLessThanTwoException : public RuntimeException
+{ public: virtual const char * what() const noexcept; };
 
-Can I just polymorphism catch one and then done?
-I can diff with parsing errors and runtime errors
-That should be enough
+class NotInt8Exception : public RuntimeException
+{ public: virtual const char * what() const noexcept; };
 
-1. use map instead of switch with how I run operation
-2. generalize binary operation
-3. add StackSizeLessThanTwo exception
-4. differentiate exceptions
-*/
+class InvalidInstructionException : public RuntimeException
+{ public: virtual const char * what() const noexcept; };

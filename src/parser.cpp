@@ -1,7 +1,8 @@
 #include "exception.hpp"
 #include "parser.hpp"
 #include "factory.hpp"
-#include <sstream>
+#include <iostream>
+#include <unordered_map>
 
 Parser::Parser(std::list<Token> token_list) :
 	token_list(token_list),
@@ -12,36 +13,19 @@ Parser::Parser(std::list<Token> token_list) :
 std::list<Instruction> Parser::parse()
 {
 	std::list<Instruction> inst_list;
+	parse_loop(inst_list);
+	check_error();
+	return inst_list;
+}
+
+void Parser::parse_loop(std::list<Instruction> & inst_list)
+{
 	for (auto it = token_list.begin(); it != token_list.end(); ++it)
 	{
 		if (it->type == TokenType::Error)
-		{
 			error_list.push_back({it->line_nb, it->str});
-		}
 		else if (it->type == TokenType::Push || it->type == TokenType::Assert)
-		{
-			auto & tmp = *it;
-			++it;
-			IOperand const * operand;
-			try
-			{
-				// TODO change this to map
-				switch(it->type)
-				{
-					case TokenType::Int8:	operand = factory().createOperand(eOperandType::Int8, it->str); break;
-					case TokenType::Int16:	operand = factory().createOperand(eOperandType::Int16, it->str); break;
-					case TokenType::Int32:	operand = factory().createOperand(eOperandType::Int32, it->str); break;
-					case TokenType::Float:	operand = factory().createOperand(eOperandType::Float, it->str); break;
-					case TokenType::Double:	operand = factory().createOperand(eOperandType::Double, it->str); break;
-					default: throw AvmException(it->str);
-				}
-				inst_list.push_back(Instruction(tmp.type, it->line_nb, OperandPtr(operand)));
-			}
-			catch(AvmException const & e)
-			{
-				error_list.push_back({it->line_nb, e.what()});
-			}
-		}
+			parse_inst_with_operand(inst_list, it);
 		else
 		{
 			if (it->type == TokenType::Exit)
@@ -49,15 +33,40 @@ std::list<Instruction> Parser::parse()
 			inst_list.push_back(Instruction(it->type, it->line_nb));
 		}
 	}
+}
+
+void Parser::parse_inst_with_operand(std::list<Instruction> & inst_list, std::list<Token>::iterator & it)
+{
+	try
+	{
+		auto & tmp = *it;
+		++it;
+		static std::unordered_map<TokenType, eOperandType> type_map
+		{
+			{TokenType::Int8, eOperandType::Int8},
+			{TokenType::Int16, eOperandType::Int16},
+			{TokenType::Int32, eOperandType::Int32},
+			{TokenType::Float, eOperandType::Float},
+			{TokenType::Double, eOperandType::Double}
+		};
+		IOperand const * operand = factory().createOperand(type_map[it->type], it->str);
+		inst_list.push_back(Instruction(tmp.type, it->line_nb, OperandPtr(operand)));
+	}
+	catch(ParsingException const & e)
+	{
+		error_list.push_back({it->line_nb, e.what()});
+	}
+}
+
+void Parser::check_error()
+{
 	if (!error_list.empty() || !has_exit)
 	{
-		std::stringstream ss;
-		ss << "Error: there is at least one error in the input\n";
+		std::cerr << "Parsing Errors:\n";
 		for (auto & err : error_list)
-			ss << "Line " << err.first << ": " << err.second << std::endl;
+			std::cerr << "Line " << err.first << ": " << err.second << std::endl;
 		if (!has_exit)
-			ss << "The program doesn't have an exit instruction\n";
-		throw AvmException(ss.str());
+			std::cerr << "The program doesn't have an exit instruction\n";
+		throw ParsingException{};
 	}
-	return inst_list;
 }

@@ -36,9 +36,9 @@ IOperand const *Factory::createInt8(std::string const &value) const
 	ss >> big_n;
 
 	if (is_overflow<long long, int8_t>(big_n))
-		throw AvmException("Overflow on a value");
+		throw OverflowException{};
 	else if (is_underflow<long long, int8_t>(big_n))
-		throw AvmException("Underflow on a value");
+		throw UnderflowException{};
 
 	int8_t small_n = static_cast<int8_t>(big_n);
 	return (new Operand<int8_t>(small_n));
@@ -51,9 +51,9 @@ IOperand const *Factory::createInt16(std::string const &value) const
 	ss >> big_n;
 
 	if (is_overflow<long long, int16_t>(big_n))
-		throw AvmException("Overflow on a value");
+		throw OverflowException{};
 	else if (is_underflow<long long, int16_t>(big_n))
-		throw AvmException("Underflow on a value");
+		throw UnderflowException{};
 
 	int16_t small_n = static_cast<int16_t>(big_n);
 	return (new Operand<int16_t>(small_n));
@@ -66,9 +66,9 @@ IOperand const *Factory::createInt32(std::string const &value) const
 	ss >> big_n;
 
 	if (is_overflow<long long, int32_t>(big_n))
-		throw AvmException("Overflow on a value");
+		throw OverflowException{};
 	else if (is_underflow<long long, int32_t>(big_n))
-		throw AvmException("Underflow on a value");
+		throw UnderflowException{};
 
 	int32_t small_n = static_cast<int32_t>(big_n);
 	return (new Operand<int32_t>(small_n));
@@ -81,9 +81,9 @@ IOperand const *Factory::createFloat(std::string const &value) const
 	ss >> big_n;
 
 	if (is_overflow<long double, float>(big_n))
-		throw AvmException("Overflow on a value");
+		throw OverflowException{};
 	else if (is_underflow<long double, float>(big_n))
-		throw AvmException("Underflow on a value");
+		throw UnderflowException{};
 
 	float small_n = static_cast<float>(big_n);
 	return (new Operand<float>(small_n));
@@ -96,9 +96,9 @@ IOperand const *Factory::createDouble(std::string const &value) const
 	ss >> big_n;
 
 	if (is_overflow<long double, double>(big_n))
-		throw AvmException("Overflow on a value");
+		throw OverflowException{};
 	else if (is_underflow<long double, double>(big_n))
-		throw AvmException("Underflow on a value");
+		throw UnderflowException{};
 
 	double small_n = static_cast<double>(big_n);
 	return (new Operand<double>(small_n));

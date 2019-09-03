@@ -28,13 +28,12 @@ private:
     std::istream & is;
     std::list<OperandPtr> stack;
 
-    OperandPtr pop_stack();
+    OperandPtr pop_stack(Instruction & inst);
     void do_inst(Instruction & inst);
-    void push(OperandPtr && operand);
-    void pop();
-    void dump() const;
-    void assert(OperandPtr && operand) const;
-    void print() const;
-
+    void push(Instruction & inst);
+    void pop(Instruction & inst);
+    void dump(Instruction & inst);
+    void assert(Instruction & inst);
+    void print(Instruction & inst);
     void binary_operation(Instruction & inst);
 };

@@ -68,14 +68,14 @@ public:
 	IOperand const * operator/(IOperand const & rhs) const
 	{
 		if (std::stold(rhs.toString()) == 0)
-			throw AvmException("Division by zero");
+			throw DivisionByZeroException{};
 		return operation([](auto l, auto r)->var_t{return l / r;}, rhs);
 	}
 
 	IOperand const * operator%(IOperand const & rhs) const
 	{
 		if (std::stold(rhs.toString()) == 0)
-			throw AvmException("Modulo by zero");
+			throw ModuloByZeroException{};
 		auto new_type = (type > rhs.getType()) ? type : rhs.getType();
 		auto result = (new_type < eOperandType::Float)
 				? std::to_string(static_cast<long long>(value) % std::stoll(rhs.toString()))
