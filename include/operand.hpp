@@ -23,6 +23,7 @@ public:
 		value(value),
 		str(std::to_string(value))
 	{
+		// TODO change this to map
 		if		(typeid(T) == typeid(int8_t))	{ precision = 0;	type = eOperandType::Int8; }
 		else if (typeid(T) == typeid(int16_t))	{ precision = 0;	type = eOperandType::Int16; }
 		else if (typeid(T) == typeid(int32_t))	{ precision = 0;	type = eOperandType::Int32; }

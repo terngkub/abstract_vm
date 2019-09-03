@@ -34,10 +34,7 @@ private:
     void pop();
     void dump() const;
     void assert(OperandPtr && operand) const;
-    void add();
-    void sub();
-    void mul();
-    void div();
-    void mod();
     void print() const;
+
+    void binary_operation(Instruction & inst);
 };

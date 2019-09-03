@@ -72,6 +72,7 @@ bool Lexer::match_value()
 		else
 		{
 			TokenType value_type;
+			// TODO change this to map
 			if		(matches.str(2) == "int8")	value_type = TokenType::Int8;
 			else if	(matches.str(2) == "int16")	value_type = TokenType::Int16;
 			else if	(matches.str(2) == "int32")	value_type = TokenType::Int32;

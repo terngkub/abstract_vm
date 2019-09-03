@@ -25,6 +25,7 @@ std::list<Instruction> Parser::parse()
 			IOperand const * operand;
 			try
 			{
+				// TODO change this to map
 				switch(it->type)
 				{
 					case TokenType::Int8:	operand = factory().createOperand(eOperandType::Int8, it->str); break;

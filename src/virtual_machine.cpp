@@ -40,17 +40,18 @@ void VirtualMachine::do_inst(Instruction & inst)
 {
 	try
 	{
+		// TODO change this to map
 		switch(inst.type)
 		{
 			case TokenType::Push:	push(std::move(inst.operand)); break;
 			case TokenType::Pop:	pop(); break;
 			case TokenType::Dump:	dump(); break;
 			case TokenType::Assert:	assert(std::move(inst.operand)); break;
-			case TokenType::Add:	add(); break;
-			case TokenType::Sub:	sub(); break;
-			case TokenType::Mul:	mul(); break;
-			case TokenType::Div:	div(); break;
-			case TokenType::Mod:	mod(); break;
+			case TokenType::Add:	binary_operation(inst); break;
+			case TokenType::Sub:	binary_operation(inst); break;
+			case TokenType::Mul:	binary_operation(inst); break;
+			case TokenType::Div:	binary_operation(inst); break;
+			case TokenType::Mod:	binary_operation(inst); break;
 			case TokenType::Print:	print(); break;
 			default: throw(AvmException("invalid instruction type"));
 		}
@@ -100,39 +101,19 @@ void VirtualMachine::assert(OperandPtr && operand) const
 		throw AvmException("assert instruction is not true");
 }
 
-void VirtualMachine::add()
+void VirtualMachine::binary_operation(Instruction & inst)
 {
+	std::unordered_map<TokenType, IOperand const * (*)(OperandPtr &&, OperandPtr &&)> binary_func
+	{
+		{TokenType::Add, [](auto && left, auto && right){ return *left + *right; }},
+		{TokenType::Sub, [](auto && left, auto && right){ return *left - *right; }},
+		{TokenType::Mul, [](auto && left, auto && right){ return *left * *right; }},
+		{TokenType::Div, [](auto && left, auto && right){ return *left / *right; }},
+		{TokenType::Mod, [](auto && left, auto && right){ return *left % *right; }}
+	};
 	auto right = pop_stack();
 	auto left = pop_stack();
-	stack.push_front(OperandPtr(*left + *right));
-}
-
-void VirtualMachine::sub()
-{
-	auto right = pop_stack();
-	auto left = pop_stack();
-	stack.push_front(OperandPtr(*left - *right));
-}
-
-void VirtualMachine::mul()
-{
-	auto right = pop_stack();
-	auto left = pop_stack();
-	stack.push_front(OperandPtr(*left * *right));
-}
-
-void VirtualMachine::div()
-{
-	auto right = pop_stack();
-	auto left = pop_stack();
-	stack.push_front(OperandPtr(*left / *right));
-}
-
-void VirtualMachine::mod()
-{
-	auto right = pop_stack();
-	auto left = pop_stack();
-	stack.push_front(OperandPtr(*left % *right));
+	stack.push_front(OperandPtr(binary_func[inst.type](std::move(left), std::move(right))));
 }
 
 void VirtualMachine::print() const
