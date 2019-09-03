@@ -40,7 +40,7 @@ void Parser::parse_inst_with_operand(std::list<Token>::iterator & it)
 	try
 	{
 		auto & tmp = *it++;
-		static std::unordered_map<TokenType, eOperandType> type_map
+		static const std::unordered_map<TokenType, eOperandType> type_map
 		{
 			{TokenType::Int8, eOperandType::Int8},
 			{TokenType::Int16, eOperandType::Int16},
@@ -48,7 +48,7 @@ void Parser::parse_inst_with_operand(std::list<Token>::iterator & it)
 			{TokenType::Float, eOperandType::Float},
 			{TokenType::Double, eOperandType::Double}
 		};
-		IOperand const * operand = factory().createOperand(type_map[it->type], it->str);
+		IOperand const * operand = factory().createOperand(type_map.at(it->type), it->str);
 		inst_list.push_back(Instruction(tmp.type, it->line_nb, OperandPtr(operand)));
 	}
 	catch(ParsingException const & e)

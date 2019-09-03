@@ -1,22 +1,11 @@
 #include "lexer.hpp"
 #include <iostream>
+#include <regex>
+#include <unordered_map>
 
 // Public
 
 Lexer::Lexer(std::istream & is) :
-	plain_inst_map{
-		{"pop",		TokenType::Pop},
-		{"dump",	TokenType::Dump},
-		{"add",		TokenType::Add},
-		{"sub",		TokenType::Sub},
-		{"mul",		TokenType::Mul},
-		{"div",		TokenType::Div},
-		{"mod",		TokenType::Mod},
-		{"print",	TokenType::Print},
-		{"exit",	TokenType::Exit}
-	},
-	plain_inst_pattern{R"((pop|dump|add|sub|mul|div|mod|print|exit)(?:[[:space:]]*?;.*)?)"},
-	value_inst_pattern{R"((push|assert) (int(?:8|16|32)|float|double)\((\-?[[:digit:]]+(?:\.[[:digit:]]+)?)\)(?:[[:space:]]*?;.*)?)"},
 	is(is),
 	token_list{},
 	current_line{},
@@ -49,9 +38,22 @@ void Lexer::match()
 bool Lexer::match_plain()
 {
 	std::smatch matches;
+	static const std::regex plain_inst_pattern{R"((pop|dump|add|sub|mul|div|mod|print|exit)(?:[[:space:]]*?;.*)?)"};
 	if (std::regex_search(current_line, matches, plain_inst_pattern))
 	{
-		token_list.push_back(Token{plain_inst_map[matches[1]], line_nb, matches[1]});
+    	static const std::unordered_map<std::string, TokenType> plain_inst_map
+		{
+			{"pop",		TokenType::Pop},
+			{"dump",	TokenType::Dump},
+			{"add",		TokenType::Add},
+			{"sub",		TokenType::Sub},
+			{"mul",		TokenType::Mul},
+			{"div",		TokenType::Div},
+			{"mod",		TokenType::Mod},
+			{"print",	TokenType::Print},
+			{"exit",	TokenType::Exit}
+		};
+		token_list.push_back(Token{plain_inst_map.at(matches[1]), line_nb, matches[1]});
 		return true;
 	}
 	return false;
@@ -60,6 +62,7 @@ bool Lexer::match_plain()
 bool Lexer::match_value()
 {
 	std::smatch matches;
+	static const std::regex value_inst_pattern{R"((push|assert) (int(?:8|16|32)|float|double)\((\-?[[:digit:]]+(?:\.[[:digit:]]+)?)\)(?:[[:space:]]*?;.*)?)"};
 	if (std::regex_search(current_line, matches, value_inst_pattern))
 	{
 		auto inst_type = (matches.str(1) == "push") ? TokenType::Push : TokenType::Assert;
@@ -71,14 +74,15 @@ bool Lexer::match_value()
 		}
 		else
 		{
-			TokenType value_type;
-			// TODO change this to map
-			if		(matches.str(2) == "int8")	value_type = TokenType::Int8;
-			else if	(matches.str(2) == "int16")	value_type = TokenType::Int16;
-			else if	(matches.str(2) == "int32")	value_type = TokenType::Int32;
-			else if	(matches.str(2) == "float")	value_type = TokenType::Float;
-			else								value_type = TokenType::Double;
-			token_list.push_back(Token{value_type, line_nb, matches.str(3)});
+			static const std::unordered_map<std::string, TokenType> type_map
+			{
+				{"int8", TokenType::Int8},
+				{"int16", TokenType::Int16},
+				{"int32", TokenType::Int32},
+				{"float", TokenType::Float},
+				{"double", TokenType::Double}
+			};
+			token_list.push_back(Token{type_map.at(matches.str(2)), line_nb, matches.str(3)});
 		}
 		return true;
 	}

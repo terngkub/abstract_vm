@@ -3,6 +3,8 @@
 #include "parser.hpp"
 #include "exception.hpp"
 #include <iostream>
+#include <sstream>
+#include <unordered_map>
 
 // Public
 
@@ -32,7 +34,7 @@ void VirtualMachine::do_inst(Instruction & inst)
 {
 	try
 	{
-		static std::unordered_map<TokenType, void (VirtualMachine::*)(Instruction &)> inst_func
+		static const std::unordered_map<TokenType, void (VirtualMachine::*)(Instruction &)> inst_func
 		{
 			{TokenType::Push,	&VirtualMachine::push},
 			{TokenType::Pop,	&VirtualMachine::pop},
@@ -45,7 +47,7 @@ void VirtualMachine::do_inst(Instruction & inst)
 			{TokenType::Mod,	&VirtualMachine::binary_operation},
 			{TokenType::Print,	&VirtualMachine::print},
 		};
-		(this->*inst_func[inst.type])(inst);
+		(this->*inst_func.at(inst.type))(inst);
 	}
 	catch (RuntimeException const & e)
 	{
@@ -99,7 +101,7 @@ void VirtualMachine::binary_operation(Instruction & inst)
 	auto right = pop_stack(inst);
 	auto left = pop_stack(inst);
 
-	static std::unordered_map<TokenType, IOperand const * (*)(OperandPtr &&, OperandPtr &&)> binary_func
+	static const std::unordered_map<TokenType, IOperand const * (*)(OperandPtr &&, OperandPtr &&)> binary_func
 	{
 		{TokenType::Add, [](auto && left, auto && right){ return *left + *right; }},
 		{TokenType::Sub, [](auto && left, auto && right){ return *left - *right; }},
@@ -107,7 +109,7 @@ void VirtualMachine::binary_operation(Instruction & inst)
 		{TokenType::Div, [](auto && left, auto && right){ return *left / *right; }},
 		{TokenType::Mod, [](auto && left, auto && right){ return *left % *right; }}
 	};
-	stack.push_front(OperandPtr(binary_func[inst.type](std::move(left), std::move(right))));
+	stack.push_front(OperandPtr(binary_func.at(inst.type)(std::move(left), std::move(right))));
 }
 
 void VirtualMachine::print(Instruction & inst)
