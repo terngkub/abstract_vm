@@ -6,26 +6,26 @@
 
 Parser::Parser(std::list<Token> token_list) :
 	token_list(token_list),
+	inst_list{},
 	error_list{},
 	has_exit{false}
 {}
 
 std::list<Instruction> Parser::parse()
 {
-	std::list<Instruction> inst_list;
-	parse_loop(inst_list);
+	parse_loop();
 	check_error();
-	return inst_list;
+	return std::move(inst_list);
 }
 
-void Parser::parse_loop(std::list<Instruction> & inst_list)
+void Parser::parse_loop()
 {
 	for (auto it = token_list.begin(); it != token_list.end(); ++it)
 	{
 		if (it->type == TokenType::Error)
 			error_list.push_back({it->line_nb, it->str});
 		else if (it->type == TokenType::Push || it->type == TokenType::Assert)
-			parse_inst_with_operand(inst_list, it);
+			parse_inst_with_operand(it);
 		else
 		{
 			if (it->type == TokenType::Exit)
@@ -35,12 +35,11 @@ void Parser::parse_loop(std::list<Instruction> & inst_list)
 	}
 }
 
-void Parser::parse_inst_with_operand(std::list<Instruction> & inst_list, std::list<Token>::iterator & it)
+void Parser::parse_inst_with_operand(std::list<Token>::iterator & it)
 {
 	try
 	{
-		auto & tmp = *it;
-		++it;
+		auto & tmp = *it++;
 		static std::unordered_map<TokenType, eOperandType> type_map
 		{
 			{TokenType::Int8, eOperandType::Int8},
@@ -62,7 +61,7 @@ void Parser::check_error()
 {
 	if (!error_list.empty() || !has_exit)
 	{
-		std::cerr << "Parsing Errors:\n";
+		std::cerr << "Parsing errors:\n";
 		for (auto & err : error_list)
 			std::cerr << "Line " << err.first << ": " << err.second << std::endl;
 		if (!has_exit)

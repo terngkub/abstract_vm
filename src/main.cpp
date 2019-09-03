@@ -2,13 +2,8 @@
 #include <iostream>
 #include <fstream>
 
-int main(int argc, char ** argv)
+void run_vm(int argc, char ** argv)
 {
-	if (argc > 2)
-	{
-		std::cerr << "Error: wrong number of arguments\nUsage: ./avm [file]\n";
-		return 1;
-	}
 	if (argc == 1)
 	{
 		VirtualMachine vm{std::cin};
@@ -21,10 +16,30 @@ int main(int argc, char ** argv)
 		if (ifs.fail())
 		{
 			std::cerr << "Error: unable to open file " << argv[1] << std::endl;
-			return 1;
+			throw std::exception{};
 		}
 		VirtualMachine vm{ifs};
 		vm.run();
 		ifs.close();
 	}
 }
+
+int main(int argc, char ** argv)
+{
+	if (argc > 2)
+	{
+		std::cerr << "Error: wrong number of arguments\nUsage: ./avm [file]\n";
+		return 1;
+	}
+
+	try
+	{
+		run_vm(argc, argv);
+	}
+	catch (std::exception const & e)
+	{
+		return 1;
+	}
+
+}
+

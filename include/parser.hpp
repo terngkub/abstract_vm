@@ -26,10 +26,11 @@ public:
 
 private:
     std::list<Token> token_list;
+    std::list<Instruction> inst_list;
     std::list<std::pair<int, std::string>> error_list;
     bool has_exit;
 
-    void parse_loop(std::list<Instruction> & inst_list);
-    void parse_inst_with_operand(std::list<Instruction> & inst_list, std::list<Token>::iterator & it);
+    void parse_loop();
+    void parse_inst_with_operand(std::list<Token>::iterator & it);
     void check_error();
 };

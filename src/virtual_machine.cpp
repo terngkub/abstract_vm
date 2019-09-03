@@ -30,20 +30,28 @@ void VirtualMachine::run()
 
 void VirtualMachine::do_inst(Instruction & inst)
 {
-	static std::unordered_map<TokenType, void (VirtualMachine::*)(Instruction &)> inst_func
+	try
 	{
-		{TokenType::Push,	&VirtualMachine::push},
-		{TokenType::Pop,	&VirtualMachine::pop},
-		{TokenType::Dump,	&VirtualMachine::dump},
-		{TokenType::Assert,	&VirtualMachine::assert},
-		{TokenType::Add,	&VirtualMachine::binary_operation},
-		{TokenType::Sub,	&VirtualMachine::binary_operation},
-		{TokenType::Mul,	&VirtualMachine::binary_operation},
-		{TokenType::Div,	&VirtualMachine::binary_operation},
-		{TokenType::Mod,	&VirtualMachine::binary_operation},
-		{TokenType::Print,	&VirtualMachine::print},
-	};
-	(this->*inst_func[inst.type])(inst);
+		static std::unordered_map<TokenType, void (VirtualMachine::*)(Instruction &)> inst_func
+		{
+			{TokenType::Push,	&VirtualMachine::push},
+			{TokenType::Pop,	&VirtualMachine::pop},
+			{TokenType::Dump,	&VirtualMachine::dump},
+			{TokenType::Assert,	&VirtualMachine::assert},
+			{TokenType::Add,	&VirtualMachine::binary_operation},
+			{TokenType::Sub,	&VirtualMachine::binary_operation},
+			{TokenType::Mul,	&VirtualMachine::binary_operation},
+			{TokenType::Div,	&VirtualMachine::binary_operation},
+			{TokenType::Mod,	&VirtualMachine::binary_operation},
+			{TokenType::Print,	&VirtualMachine::print},
+		};
+		(this->*inst_func[inst.type])(inst);
+	}
+	catch (RuntimeException const & e)
+	{
+		std::cerr << "Runtime error at line " << inst.line_nb << " : " << e.what() << std::endl;
+		throw RuntimeException{};
+	}
 }
 
 OperandPtr VirtualMachine::pop_stack(Instruction & inst)
