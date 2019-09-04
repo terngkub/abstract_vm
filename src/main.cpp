@@ -2,44 +2,63 @@
 #include <iostream>
 #include <fstream>
 
-void run_vm(int argc, char ** argv)
+void vm_input_mode(bool is_verbose)
 {
-	if (argc == 1)
+	VirtualMachine vm{is_verbose, std::cin};
+	vm.run();
+}
+
+void vm_file_mode(bool is_verbose, std::string filename)
+{
+	std::ifstream ifs;
+	ifs.open(filename);
+	if (ifs.fail())
 	{
-		VirtualMachine vm{std::cin};
-		vm.run();
+		std::cerr << "Error: unable to open file " << filename << std::endl;
+		throw std::exception{};
 	}
-	else
+	VirtualMachine vm{is_verbose, ifs};
+	vm.run();
+	ifs.close();
+}
+
+void usage()
+{
+	std::cerr << "Usage: ./avm [-v] [file]\n";
+	throw std::exception{}; 
+}
+
+int parse_option(int argc, char ** argv)
+{
+	// bit mask: file = 1, verbose = 2
+	int mode = 0;
+	if (argc == 2)
+		mode = (strcmp(argv[1], "-v") != 0) ? 1 : 2;
+	else if (argc == 3)
 	{
-		std::ifstream ifs;
-		ifs.open(argv[1]);
-		if (ifs.fail())
-		{
-			std::cerr << "Error: unable to open file " << argv[1] << std::endl;
-			throw std::exception{};
-		}
-		VirtualMachine vm{ifs};
-		vm.run();
-		ifs.close();
+		if (strcmp(argv[1], "-v") != 0)
+			usage();
+		mode = 3;
 	}
+	else if (argc > 3)
+	{
+		std::cerr << "Error: wrong number of arguments\n";
+		usage();
+	}
+	return mode;
 }
 
 int main(int argc, char ** argv)
 {
-	if (argc > 2)
-	{
-		std::cerr << "Error: wrong number of arguments\nUsage: ./avm [file]\n";
-		return 1;
-	}
-
 	try
 	{
-		run_vm(argc, argv);
+		int mode = parse_option(argc, argv);
+		bool is_verbose = mode & 2;
+		if (mode & 1)	vm_file_mode(is_verbose, argv[argc - 1]);
+		else			vm_input_mode(is_verbose);
 	}
 	catch (std::exception const & e)
 	{
 		return 1;
 	}
-
 }
-

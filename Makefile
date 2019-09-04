@@ -10,6 +10,7 @@ HEADER		=	exception.hpp \
 				instruction.hpp \
 				ioperand.hpp \
 				lexer.hpp \
+				operand_type.hpp \
 				operand.hpp \
 				parser.hpp \
 				token.hpp \
@@ -19,6 +20,7 @@ FILE		=	exception.cpp \
 				instruction.cpp \
 				lexer.cpp \
 				main.cpp \
+				operand_type.cpp \
 				parser.cpp \
 				token.cpp \
 				virtual_machine.cpp

@@ -1,16 +1,7 @@
 #pragma once
+#include "operand_type.hpp"
 #include <string>
 #include <memory>
-
-// TODO use enum class
-enum eOperandType
-{
-	Int8 = 0,
-	Int16 = 1,
-	Int32 = 2,
-	Float = 3,
-	Double = 4
-};
 
 class IOperand
 {

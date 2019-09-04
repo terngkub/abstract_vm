@@ -8,7 +8,7 @@ class VirtualMachine
 public:
     // Constructor
     VirtualMachine() = delete;
-    VirtualMachine(std::istream & is);
+    VirtualMachine(bool is_verbose, std::istream & is);
 
     // Destructor
     ~VirtualMachine() = default;
@@ -25,10 +25,11 @@ public:
     void run();
 
 private:
+    bool is_verbose;
     std::istream & is;
     std::list<OperandPtr> stack;
 
-    OperandPtr pop_stack(Instruction & inst);
+    OperandPtr pop_stack();
     void do_inst(Instruction & inst);
     void push(Instruction & inst);
     void pop(Instruction & inst);

@@ -1,4 +1,5 @@
 #pragma once
+#include <ostream>
 #include <string>
 
 enum class TokenType
@@ -34,3 +35,5 @@ public:
 	int line_nb;
 	std::string str;
 };
+
+std::ostream & operator<<(std::ostream & os, TokenType const & t);

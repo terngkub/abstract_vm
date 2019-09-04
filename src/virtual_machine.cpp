@@ -8,7 +8,8 @@
 
 // Public
 
-VirtualMachine::VirtualMachine(std::istream & is) :
+VirtualMachine::VirtualMachine(bool is_verbose, std::istream & is) :
+	is_verbose{is_verbose},
 	is(is)
 {}
 
@@ -61,50 +62,72 @@ void VirtualMachine::do_inst(Instruction & inst)
 	}
 }
 
-OperandPtr VirtualMachine::pop_stack(Instruction & inst)
+OperandPtr VirtualMachine::pop_stack()
 {
-	(void)inst;
 	if (stack.empty())
 		throw EmptyStackException{};
 	auto operand = std::move(stack.front());
+
+	if (is_verbose)
+		std::cout << "Popped " << operand->getType() << "(" << operand->toString() << ")\n";
+
 	stack.pop_front();
 	return operand;
 }
 
 void VirtualMachine::push(Instruction & inst)
 {
+	if (is_verbose)
+		std::cout << "Executing line " << inst.line_nb << " : push " << inst.operand->getType() << "(" << inst.operand->toString() << ")\n";
+
 	stack.push_front(std::move(inst.operand));
 }
 
 void VirtualMachine::pop(Instruction & inst)
 {
-	(void)inst;
+	if (is_verbose)
+		std::cout << "Executing line " << inst.line_nb << " : pop\n";
+
 	if (stack.empty())
 		throw EmptyStackException{};
-	stack.pop_front();
+	pop_stack();
 }
 
 void VirtualMachine::dump(Instruction & inst)
 {
-	(void)inst;
+	if (is_verbose)
+		std::cout << "Executing line " << inst.line_nb << " : dump\n";
+
 	for(auto const & elem : stack)
 		std::cout << elem->toString() << "\n";
 }
 
 void VirtualMachine::assert(Instruction & inst)
 {
+	if (is_verbose)
+		std::cout << "Executing line " << inst.line_nb << " : assert " << inst.operand->getType() << "(" <<inst.operand->toString() << ")\n";
+
 	auto const & top = stack.front();
 	if (top->getType() != inst.operand->getType()
 			|| top->toString() != inst.operand->toString())
 		throw FalseAssertionException{};
+
+	if (is_verbose)
+		std::cout << "Assertion result is true\n";
 }
 
 void VirtualMachine::binary_operation(Instruction & inst)
 {
+	if (is_verbose)
+		std::cout << "Executing line " << inst.line_nb << " : " << inst.type << "\n";
+
 	if (stack.size() < 2)
 		throw StackLessThanTwoException{};
-	auto right = pop_stack(inst);
-	auto left = pop_stack(inst);
+	auto right = pop_stack();
+	auto left = pop_stack();
+
+	if (is_verbose)
+		std::cout << left->toString() << " " << inst.type << " " << right->toString() << "\n";
 
 	static const std::unordered_map<TokenType, IOperand const * (*)(OperandPtr &&, OperandPtr &&)> binary_func
 	{
@@ -117,12 +140,18 @@ void VirtualMachine::binary_operation(Instruction & inst)
 		{TokenType::Or, [](auto && left, auto && right){ return *left | *right; }},
 		{TokenType::Xor, [](auto && left, auto && right){ return *left ^ *right; }}
 	};
-	stack.push_front(OperandPtr(binary_func.at(inst.type)(std::move(left), std::move(right))));
+	auto opt = OperandPtr(binary_func.at(inst.type)(std::move(left), std::move(right)));
+
+	if (is_verbose)
+		std::cout << "Pushed " << opt->getType() << "(" << opt->toString() << ")\n";
+
+	stack.push_front(std::move(opt));
 }
 
 void VirtualMachine::print(Instruction & inst)
 {
-	(void)inst;
+	if (is_verbose)
+		std::cout << "Executing line " << inst.line_nb << " : print\n";
 	auto const & top = stack.front();
 	if (top->getType() != eOperandType::Int8)
 		throw NotInt8Exception{};
@@ -139,7 +168,8 @@ bool unique_ptr_morethan(OperandPtr const & a, OperandPtr const & b)
 
 void VirtualMachine::max(Instruction & inst)
 {
-	(void)inst;
+	if (is_verbose)
+		std::cout << "Executing line " << inst.line_nb << " : max\n";
 	if (stack.empty())
 		throw EmptyStackException{};
 	auto const & ptr = *std::max_element(stack.begin(), stack.end(), unique_ptr_morethan);
@@ -148,7 +178,8 @@ void VirtualMachine::max(Instruction & inst)
 
 void VirtualMachine::min(Instruction & inst)
 {
-	(void)inst;
+	if (is_verbose)
+		std::cout << "Executing line " << inst.line_nb << " : min\n";
 	if (stack.empty())
 		throw EmptyStackException{};
 	auto const & ptr = *std::min_element(stack.begin(), stack.end(), unique_ptr_morethan);
