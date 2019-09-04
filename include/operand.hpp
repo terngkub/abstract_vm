@@ -120,6 +120,14 @@ public:
 				: throw FloatingBitwiseException{};
 		return factory().createOperand(new_type, result);
 	}
+	
+	bool operator<(IOperand const & rhs) const
+	{
+		auto new_type = std::max(type, rhs.getType());
+		return (new_type < eOperandType::Float)
+				? static_cast<long long>(value) < std::stoll(rhs.toString())
+				: static_cast<long double>(value) < std::stold(rhs.toString());
+	}
 
 private:
 	int				precision;

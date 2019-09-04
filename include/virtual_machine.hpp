@@ -36,4 +36,6 @@ private:
     void assert(Instruction & inst);
     void print(Instruction & inst);
     void binary_operation(Instruction & inst);
+    void max(Instruction & inst);
+    void min(Instruction & inst);
 };

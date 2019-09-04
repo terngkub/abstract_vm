@@ -49,6 +49,8 @@ void VirtualMachine::do_inst(Instruction & inst)
 			{TokenType::Or,		&VirtualMachine::binary_operation},
 			{TokenType::Xor,	&VirtualMachine::binary_operation},
 			{TokenType::Print,	&VirtualMachine::print},
+			{TokenType::Max,	&VirtualMachine::max},
+			{TokenType::Min,	&VirtualMachine::min},
 		};
 		(this->*inst_func.at(inst.type))(inst);
 	}
@@ -112,8 +114,8 @@ void VirtualMachine::binary_operation(Instruction & inst)
 		{TokenType::Div, [](auto && left, auto && right){ return *left / *right; }},
 		{TokenType::Mod, [](auto && left, auto && right){ return *left % *right; }},
 		{TokenType::And, [](auto && left, auto && right){ return *left & *right; }},
-		{TokenType::And, [](auto && left, auto && right){ return *left | *right; }},
-		{TokenType::And, [](auto && left, auto && right){ return *left ^ *right; }}
+		{TokenType::Or, [](auto && left, auto && right){ return *left | *right; }},
+		{TokenType::Xor, [](auto && left, auto && right){ return *left ^ *right; }}
 	};
 	stack.push_front(OperandPtr(binary_func.at(inst.type)(std::move(left), std::move(right))));
 }
@@ -128,4 +130,27 @@ void VirtualMachine::print(Instruction & inst)
 	int c;
 	ss >> c;
 	std::cout << static_cast<char>(c) << "\n";
+}
+
+bool unique_ptr_morethan(OperandPtr const & a, OperandPtr const & b)
+{
+	return *a < *b;
+}
+
+void VirtualMachine::max(Instruction & inst)
+{
+	(void)inst;
+	if (stack.empty())
+		throw EmptyStackException{};
+	auto const & ptr = *std::max_element(stack.begin(), stack.end(), unique_ptr_morethan);
+	std::cout << ptr->toString() << std::endl;
+}
+
+void VirtualMachine::min(Instruction & inst)
+{
+	(void)inst;
+	if (stack.empty())
+		throw EmptyStackException{};
+	auto const & ptr = *std::min_element(stack.begin(), stack.end(), unique_ptr_morethan);
+	std::cout << ptr->toString() << std::endl;
 }

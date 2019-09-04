@@ -8,6 +8,7 @@ enum class TokenType
 	Add, Sub, Mul, Div, Mod,
 	And, Or, Xor,
 	Print, Exit,
+	Max, Min,
 	Error
 };
 
