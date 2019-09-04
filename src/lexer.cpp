@@ -32,13 +32,13 @@ void Lexer::match()
 	if (current_line[0] == ';') return;
 	if (match_plain()) return;
 	if (match_value()) return;
-	token_list.push_back(Token{TokenType::Error, line_nb, "an instruciton in unknown"});
+	token_list.push_back(Token{TokenType::Error, line_nb, "an instruction in unknown"});
 }
 
 bool Lexer::match_plain()
 {
 	std::smatch matches;
-	static const std::regex plain_inst_pattern{R"((pop|dump|add|sub|mul|div|mod|print|exit)(?:[[:space:]]*?;.*)?)"};
+	static const std::regex plain_inst_pattern{R"((pop|dump|add|sub|mul|div|mod|and|print|exit)(?:[[:space:]]*?;.*)?)"};
 	if (std::regex_search(current_line, matches, plain_inst_pattern))
 	{
     	static const std::unordered_map<std::string, TokenType> plain_inst_map
@@ -50,6 +50,9 @@ bool Lexer::match_plain()
 			{"mul",		TokenType::Mul},
 			{"div",		TokenType::Div},
 			{"mod",		TokenType::Mod},
+			{"and",		TokenType::And},
+			{"or",		TokenType::Or},
+			{"xor",		TokenType::Xor},
 			{"print",	TokenType::Print},
 			{"exit",	TokenType::Exit}
 		};

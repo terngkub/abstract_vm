@@ -6,6 +6,7 @@ enum class TokenType
 	Int8, Int16, Int32, Double, Float,
 	Push, Pop, Dump, Assert,
 	Add, Sub, Mul, Div, Mod,
+	And, Or, Xor,
 	Print, Exit,
 	Error
 };

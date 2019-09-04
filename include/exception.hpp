@@ -31,3 +31,6 @@ class NotInt8Exception : public RuntimeException
 
 class InvalidInstructionException : public RuntimeException
 { public: virtual const char * what() const noexcept; };
+
+class FloatingBitwiseException : public RuntimeException
+{ public: virtual const char * what() const noexcept; };

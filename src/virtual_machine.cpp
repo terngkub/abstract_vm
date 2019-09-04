@@ -45,6 +45,9 @@ void VirtualMachine::do_inst(Instruction & inst)
 			{TokenType::Mul,	&VirtualMachine::binary_operation},
 			{TokenType::Div,	&VirtualMachine::binary_operation},
 			{TokenType::Mod,	&VirtualMachine::binary_operation},
+			{TokenType::And,	&VirtualMachine::binary_operation},
+			{TokenType::Or,		&VirtualMachine::binary_operation},
+			{TokenType::Xor,	&VirtualMachine::binary_operation},
 			{TokenType::Print,	&VirtualMachine::print},
 		};
 		(this->*inst_func.at(inst.type))(inst);
@@ -107,7 +110,10 @@ void VirtualMachine::binary_operation(Instruction & inst)
 		{TokenType::Sub, [](auto && left, auto && right){ return *left - *right; }},
 		{TokenType::Mul, [](auto && left, auto && right){ return *left * *right; }},
 		{TokenType::Div, [](auto && left, auto && right){ return *left / *right; }},
-		{TokenType::Mod, [](auto && left, auto && right){ return *left % *right; }}
+		{TokenType::Mod, [](auto && left, auto && right){ return *left % *right; }},
+		{TokenType::And, [](auto && left, auto && right){ return *left & *right; }},
+		{TokenType::And, [](auto && left, auto && right){ return *left | *right; }},
+		{TokenType::And, [](auto && left, auto && right){ return *left ^ *right; }}
 	};
 	stack.push_front(OperandPtr(binary_func.at(inst.type)(std::move(left), std::move(right))));
 }
