@@ -5,6 +5,9 @@
 class ParsingException : public std::exception {};
 class RuntimeException : public std::exception {};
 
+class FloatingIntegerException : public ParsingException
+{ public: virtual const char * what() const noexcept; };
+
 class OverflowException : public ParsingException, public RuntimeException
 { public: virtual const char * what() const noexcept; };
 

@@ -17,14 +17,21 @@ public:
 	Operand(T value) :
 		precision(0),
 		type(eOperandType::Int8),
-		value(value),
-		str(std::to_string(value))
+		value(value)
 	{
 		if		(typeid(T) == typeid(int8_t))	{ precision = 0;	type = eOperandType::Int8; }
 		else if (typeid(T) == typeid(int16_t))	{ precision = 0;	type = eOperandType::Int16; }
 		else if (typeid(T) == typeid(int32_t))	{ precision = 0;	type = eOperandType::Int32; }
 		else if (typeid(T) == typeid(float))	{ precision = 7;	type = eOperandType::Float; }
 		else if (typeid(T) == typeid(double))	{ precision = 15;	type = eOperandType::Double; }
+		if (type == eOperandType::Int8)
+			str = std::to_string(value);
+		else
+		{
+			std::stringstream ss;
+			ss << value;
+			str = ss.str();
+		}
 	}
 
 	// Destructor

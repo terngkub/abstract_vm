@@ -1,0 +1,4 @@
+; test18_floating_int
+
+push int32(3.14)
+exit

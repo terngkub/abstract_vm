@@ -23,7 +23,9 @@ void Parser::parse_loop()
 	for (auto it = token_list.begin(); it != token_list.end(); ++it)
 	{
 		if (it->type == TokenType::Error)
+		{
 			error_list.push_back({it->line_nb, it->str});
+		}
 		else if (it->type == TokenType::Push || it->type == TokenType::Assert)
 			parse_inst_with_operand(it);
 		else
@@ -40,6 +42,8 @@ void Parser::parse_inst_with_operand(std::list<Token>::iterator & it)
 	try
 	{
 		auto & tmp = *it++;
+		if (it->type == TokenType::Error)
+			throw FloatingIntegerException{};
 		static const std::unordered_map<TokenType, eOperandType> type_map
 		{
 			{TokenType::Int8, eOperandType::Int8},
