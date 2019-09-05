@@ -1,7 +1,7 @@
 # Compiler Settings
 CC			=	g++
 CPP_VERSION	=	-std=c++1z
-CFLAGS		=	-Wall -Wextra -Werror $(CPP_VERSION) -g3
+CFLAGS		=	-Wall -Wextra -Werror $(CPP_VERSION)
 
 # Project Settings
 NAME		=	avm
