@@ -159,6 +159,8 @@ void VirtualMachine::print(Instruction & inst)
 	int c;
 	ss >> c;
 	std::cout << static_cast<char>(c);
+	if (is_verbose)
+		std::cout << "\n";
 }
 
 bool unique_ptr_morethan(OperandPtr const & a, OperandPtr const & b)
