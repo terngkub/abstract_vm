@@ -158,7 +158,7 @@ void VirtualMachine::print(Instruction & inst)
 	std::stringstream ss{top->toString()};
 	int c;
 	ss >> c;
-	std::cout << static_cast<char>(c) << "\n";
+	std::cout << static_cast<char>(c);
 }
 
 bool unique_ptr_morethan(OperandPtr const & a, OperandPtr const & b)
