@@ -1,0 +1,10 @@
+; test04_max
+
+push int8(0)
+push int16(42)
+push int32(-32)
+push float(3.14)
+push double(-1.8)
+dump
+min
+exit

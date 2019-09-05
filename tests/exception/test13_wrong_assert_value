@@ -1,0 +1,5 @@
+; test13_wrong_assert_value
+
+push int32(123)
+assert int32(12)
+exit

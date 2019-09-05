@@ -61,7 +61,7 @@ void Parser::check_error()
 {
 	if (!error_list.empty() || !has_exit)
 	{
-		std::cerr << "Parsing errors:\n";
+		std::cerr << "The assembly program includes one or several lexical errors or syntactic errors.\n";
 		for (auto & err : error_list)
 			std::cerr << "Line " << err.first << ": " << err.second << std::endl;
 		if (!has_exit)

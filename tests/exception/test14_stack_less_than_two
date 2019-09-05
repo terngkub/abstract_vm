@@ -1,0 +1,5 @@
+; test14_stack_less_than_two
+
+push int32(42)
+mul
+exit

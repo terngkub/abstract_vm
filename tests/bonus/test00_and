@@ -1,0 +1,11 @@
+; test00_and
+
+; first  1010 = 10
+; second 0011 = 3
+; result 0010 = 2
+
+push int8(10)
+push int8(3)
+and
+dump
+exit

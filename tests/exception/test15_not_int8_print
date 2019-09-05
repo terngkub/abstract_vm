@@ -1,0 +1,7 @@
+; test15 not_int8_print
+
+push int8(12)
+push int16(42)
+add
+print
+exit

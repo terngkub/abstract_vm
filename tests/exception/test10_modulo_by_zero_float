@@ -1,0 +1,6 @@
+; test10_modulo_by_zero_float
+
+push double(123)
+push double(0)
+mod
+exit

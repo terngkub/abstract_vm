@@ -1,0 +1,11 @@
+; test01_or
+
+; first  1010 = 10
+; second 0011 = 3
+; result 1011 = 11
+
+push int8(10)
+push int8(3)
+or
+dump
+exit

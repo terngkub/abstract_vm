@@ -1,0 +1,6 @@
+; test07_pop_empty_stack
+
+push int8(1)
+pop
+pop
+exit

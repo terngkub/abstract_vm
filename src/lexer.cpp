@@ -38,7 +38,7 @@ void Lexer::match()
 bool Lexer::match_plain()
 {
 	std::smatch matches;
-	static const std::regex plain_inst_pattern{R"((pop|dump|add|sub|mul|div|mod|and|print|exit|max|min)(?:[[:space:]]*?;.*)?)"};
+	static const std::regex plain_inst_pattern{R"((pop|dump|add|sub|mul|div|mod|and|or|xor|print|exit|max|min)(?:[[:space:]]*?;.*)?)"};
 	if (std::regex_search(current_line, matches, plain_inst_pattern))
 	{
     	static const std::unordered_map<std::string, TokenType> plain_inst_map

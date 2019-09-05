@@ -29,8 +29,5 @@ class StackLessThanTwoException : public RuntimeException
 class NotInt8Exception : public RuntimeException
 { public: virtual const char * what() const noexcept; };
 
-class InvalidInstructionException : public RuntimeException
-{ public: virtual const char * what() const noexcept; };
-
 class FloatingBitwiseException : public RuntimeException
 { public: virtual const char * what() const noexcept; };

@@ -1,0 +1,6 @@
+; test09_modulo_by_zero_int
+
+push int32(123)
+push int32(0)
+mod
+exit

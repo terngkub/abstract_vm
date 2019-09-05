@@ -1,0 +1,6 @@
+; test11_no_exit
+
+push int32(123)
+push int32(456)
+mul
+dump

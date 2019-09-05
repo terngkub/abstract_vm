@@ -1,0 +1,19 @@
+; test00_all
+
+push int8(3) ;intline comment
+push double(25600)
+push float(-64)
+push int32(32)
+push int16(-16)
+push int8(8)
+dump
+add
+sub
+mul
+div
+mod
+pop
+push int8(42)
+print
+assert int8(42)
+exit

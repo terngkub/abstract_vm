@@ -1,0 +1,6 @@
+; test08_division_by_zero
+
+push int32(12)
+push double(0)
+div
+exit

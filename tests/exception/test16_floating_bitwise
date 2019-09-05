@@ -1,0 +1,6 @@
+; test16_floating_bitwise
+
+push float(123)
+push int32(123)
+and
+exit

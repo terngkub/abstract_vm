@@ -1,0 +1,15 @@
+; test00_unknown_instruction
+
+; unfinished instruction
+asser
+
+; wrong value type
+push string(123)
+
+; wrong value
+push int32(abc)
+
+; comment that make the instruction wrong
+push ;double(123)
+
+exit

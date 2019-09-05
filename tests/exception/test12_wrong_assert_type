@@ -1,0 +1,5 @@
+; test12_wrong_assert_type
+
+push int32(123)
+assert int16(123)
+exit
