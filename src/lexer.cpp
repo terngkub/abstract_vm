@@ -38,7 +38,7 @@ void Lexer::match()
 bool Lexer::match_plain()
 {
 	std::smatch matches;
-	static const std::regex plain_inst_pattern{R"((pop|dump|add|sub|mul|div|mod|and|or|xor|print|exit|max|min)(?:[[:space:]]*?;.*)?)"};
+	static const std::regex plain_inst_pattern{R"(^\s*(pop|dump|add|sub|mul|div|mod|and|or|xor|print|exit|max|min)\s*(?:;.*)?$)"};
 	if (std::regex_search(current_line, matches, plain_inst_pattern))
 	{
     	static const std::unordered_map<std::string, TokenType> plain_inst_map
@@ -67,7 +67,7 @@ bool Lexer::match_plain()
 bool Lexer::match_value()
 {
 	std::smatch matches;
-	static const std::regex value_inst_pattern{R"((push|assert) (int(?:8|16|32)|float|double)\((\-?[[:digit:]]+(?:\.[[:digit:]]+)?)\)(?:[[:space:]]*?;.*)?)"};
+	static const std::regex value_inst_pattern{R"(^\s*(push|assert)\s+(int(?:8|16|32)|float|double)\((\-?\d+(?:\.\d+)?)\)\s*(?:;.*)?$)"};
 	if (std::regex_search(current_line, matches, value_inst_pattern))
 	{
 		auto inst_type = (matches.str(1) == "push") ? TokenType::Push : TokenType::Assert;

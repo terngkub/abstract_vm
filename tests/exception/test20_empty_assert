@@ -1,0 +1,4 @@
+; test20_empty_assert
+
+assert int8(1)
+exit

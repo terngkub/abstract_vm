@@ -2,6 +2,7 @@
 #include "lexer.hpp"
 #include "parser.hpp"
 #include "exception.hpp"
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
@@ -107,6 +108,8 @@ void VirtualMachine::assert(Instruction & inst)
 	if (is_verbose)
 		std::cout << "Executing line " << inst.line_nb << " : assert " << inst.operand->getType() << "(" <<inst.operand->toString() << ")\n";
 
+	if (stack.empty())
+		throw EmptyStackException{};
 	auto const & top = stack.front();
 	if (top->getType() != inst.operand->getType()
 			|| top->toString() != inst.operand->toString())
@@ -152,6 +155,8 @@ void VirtualMachine::print(Instruction & inst)
 {
 	if (is_verbose)
 		std::cout << "Executing line " << inst.line_nb << " : print\n";
+	if (stack.empty())
+		throw EmptyStackException{};
 	auto const & top = stack.front();
 	if (top->getType() != eOperandType::Int8)
 		throw NotInt8Exception{};
@@ -163,18 +168,13 @@ void VirtualMachine::print(Instruction & inst)
 		std::cout << "\n";
 }
 
-bool unique_ptr_morethan(OperandPtr const & a, OperandPtr const & b)
-{
-	return *a < *b;
-}
-
 void VirtualMachine::max(Instruction & inst)
 {
 	if (is_verbose)
 		std::cout << "Executing line " << inst.line_nb << " : max\n";
 	if (stack.empty())
 		throw EmptyStackException{};
-	auto const & ptr = *std::max_element(stack.begin(), stack.end(), unique_ptr_morethan);
+	auto const & ptr = *std::max_element(stack.begin(), stack.end(), [](auto const & a, auto const & b){return *a < *b;});
 	std::cout << ptr->toString() << std::endl;
 }
 
@@ -184,6 +184,6 @@ void VirtualMachine::min(Instruction & inst)
 		std::cout << "Executing line " << inst.line_nb << " : min\n";
 	if (stack.empty())
 		throw EmptyStackException{};
-	auto const & ptr = *std::min_element(stack.begin(), stack.end(), unique_ptr_morethan);
+	auto const & ptr = *std::min_element(stack.begin(), stack.end(), [](auto const & a, auto const & b){return *a < *b;});
 	std::cout << ptr->toString() << std::endl;
 }
