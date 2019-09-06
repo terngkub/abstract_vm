@@ -33,10 +33,10 @@ int parse_option(int argc, char ** argv)
 	// bit mask: file = 1, verbose = 2
 	int mode = 0;
 	if (argc == 2)
-		mode = (strcmp(argv[1], "-v") != 0) ? 1 : 2;
+		mode = (std::string{argv[1]} != "-v") ? 1 : 2;
 	else if (argc == 3)
 	{
-		if (strcmp(argv[1], "-v") != 0)
+		if (std::string{argv[1]} != "-v")
 			usage();
 		mode = 3;
 	}
