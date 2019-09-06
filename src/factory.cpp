@@ -84,7 +84,7 @@ IOperand const *Factory::createFloat(std::string const &value) const
 		throw PositiveOverflowException{};
 	else if (is_negative_overflow<long double, float>(big_n))
 		throw NegativeOverflowException{};
-	else if (is_underflow<long double, float>(big_n))
+	else if (big_n > 0 && is_underflow<long double, float>(big_n))
 		throw UnderflowException{};
 
 	float small_n = static_cast<float>(big_n);
@@ -101,7 +101,7 @@ IOperand const *Factory::createDouble(std::string const &value) const
 		throw PositiveOverflowException{};
 	else if (is_negative_overflow<long double, double>(big_n))
 		throw NegativeOverflowException{};
-	else if (is_underflow<long double, double>(big_n))
+	else if (big_n > 0 && is_underflow<long double, double>(big_n))
 		throw UnderflowException{};
 
 	double small_n = static_cast<double>(big_n);

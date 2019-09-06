@@ -110,7 +110,11 @@ void VirtualMachine::assert(Instruction & inst)
 
 	if (stack.empty())
 		throw EmptyStackException{};
+
 	auto const & top = stack.front();
+	if (is_verbose)
+		std::cout << "Assert " << top->getType() << "(" << top->toString() << ") == " << inst.operand->getType() << "(" << inst.operand->toString() << ") ?\n";
+
 	if (top->getType() != inst.operand->getType()
 			|| top->toString() != inst.operand->toString())
 		throw FalseAssertionException{};
