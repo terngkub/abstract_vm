@@ -3,9 +3,11 @@
 #include "factory.hpp"
 #include "exception.hpp"
 #include <sstream>
+#include <typeindex>
 #include <typeinfo>
 #include <cmath>
 #include <iostream>
+#include <unordered_map>
 
 
 template <typename T>
@@ -15,15 +17,10 @@ public:
 	// Constructor
 	Operand() = delete;
 	Operand(T value) :
-		precision(0),
-		type(eOperandType::Int8),
+		precision(std::numeric_limits<T>::max_exponent10),
+		type(type_map.at(typeid(T))),
 		value(value)
 	{
-		if		(typeid(T) == typeid(int8_t))	{ precision = 0;	type = eOperandType::Int8; }
-		else if (typeid(T) == typeid(int16_t))	{ precision = 0;	type = eOperandType::Int16; }
-		else if (typeid(T) == typeid(int32_t))	{ precision = 0;	type = eOperandType::Int32; }
-		else if (typeid(T) == typeid(float))	{ precision = 7;	type = eOperandType::Float; }
-		else if (typeid(T) == typeid(double))	{ precision = 15;	type = eOperandType::Double; }
 		if (type == eOperandType::Int8)
 			str = std::to_string(value);
 		else
@@ -137,6 +134,14 @@ public:
 	}
 
 private:
+	inline static const std::unordered_map<std::type_index, eOperandType> type_map
+	{
+		{typeid(int8_t), eOperandType::Int8},
+		{typeid(int16_t), eOperandType::Int16},
+		{typeid(int32_t), eOperandType::Int32},
+		{typeid(float), eOperandType::Float},
+		{typeid(double), eOperandType::Double}
+	};
 	int				precision;
 	eOperandType	type;
 	T				value;
