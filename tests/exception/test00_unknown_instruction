@@ -3,11 +3,20 @@
 ; unfinished instruction
 asser
 
+; instruction with extra stuff
+add 123
+
+; two instruction in one row
+add print
+
 ; wrong value type
 push string(123)
 
 ; wrong value
 push int32(abc)
+
+; push without value
+push
 
 ; comment that make the instruction wrong
 push ;double(123)
