@@ -1,0 +1,6 @@
+; test04_int_runtime_negative_overflow
+
+push int8(-128)
+push int8(1)
+sub
+exit

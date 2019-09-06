@@ -32,7 +32,7 @@ private:
 	IOperand const * createDouble(std::string const & value) const;
 
 	template <typename Big, typename Small>
-	bool is_overflow(Big value) const
+	bool is_positive_overflow(Big value) const
 	{
 		if (value > std::numeric_limits<Small>::max())
 			return true;
@@ -40,9 +40,17 @@ private:
 	}
 
 	template <typename Big, typename Small>
-	bool is_underflow(Big value) const
+	bool is_negative_overflow(Big value) const
 	{
 		if (value < std::numeric_limits<Small>::lowest())
+			return true;
+		return false;
+	}
+
+	template <typename Big, typename Small>
+	bool is_underflow(Big value) const
+	{
+		if (value < std::numeric_limits<Small>::min())
 			return true;
 		return false;
 	}

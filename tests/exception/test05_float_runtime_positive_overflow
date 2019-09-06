@@ -1,4 +1,4 @@
-; test05_float_runtime_overflow
+; test05_float_runtime_positive_overflow
 
 ; float
 push float(340282000000000000000000000000000000000)

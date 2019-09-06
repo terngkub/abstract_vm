@@ -1,7 +1,8 @@
 #include "exception.hpp"
 
 const char * FloatingIntegerException::what() const noexcept { return "decimal point in integer value"; }
-const char * OverflowException::what() const noexcept { return "overflow on a value"; }
+const char * PositiveOverflowException::what() const noexcept { return "positive overflow on a value"; }
+const char * NegativeOverflowException::what() const noexcept { return "negative overflow on a value"; }
 const char * UnderflowException::what() const noexcept { return "underflow on a value"; }
 const char * EmptyStackException::what() const noexcept { return "stack is empty"; }
 const char * DivisionByZeroException::what() const noexcept { return "division by zero"; }

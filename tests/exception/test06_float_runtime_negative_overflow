@@ -1,4 +1,4 @@
-; test06_float_runtime_underflow
+; test06_float_runtime_negative_overflow
 
 ; float
 push float(-340282000000000000000000000000000000000)

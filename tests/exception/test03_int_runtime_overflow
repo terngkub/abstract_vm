@@ -1,6 +1,0 @@
-; test03_int8_runtime_overflow
-
-push int8(127)
-push int8(1)
-add
-exit
